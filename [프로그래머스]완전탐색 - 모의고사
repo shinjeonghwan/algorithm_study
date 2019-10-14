@@ -1,0 +1,47 @@
+def solution(answers):
+    
+    a = [1,2,3,4,5]
+    a_cnt = 0
+    
+    b = [2,1,2,3,2,4,2,5]
+    b_cnt = 0
+    
+    c = [3,3,1,1,2,2,4,4,5,5]
+    c_cnt = 0
+    
+    length_answers = len(answers)
+    
+    a_value = int(length_answers/len(a))
+    a_rest = length_answers%len(a)
+    
+    b_value = int(length_answers/len(b))
+    b_rest = length_answers%len(b)
+    
+    c_value = int(length_answers/len(c))
+    c_rest = length_answers%len(c)
+    
+    a = a*a_value + a[:a_rest]
+    b = b*b_value + b[:b_rest]
+    c = c*c_value + c[:c_rest]
+    
+    for i in range(length_answers):
+        if answers[i] ==  a[i]:
+            a_cnt += 1
+        if answers[i] == b[i]:
+            b_cnt += 1
+        if answers[i] == c[i]:
+            c_cnt += 1
+    
+    
+    list = [a_cnt, b_cnt, c_cnt]
+    max_value = max(list)
+    answer = []
+    
+    for i in range(3):
+        if list[i] == max_value :
+            answer +=  [i+1]
+    
+    print(answer)
+    
+    
+    return answer
