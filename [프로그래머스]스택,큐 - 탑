@@ -1,0 +1,29 @@
+def solution(heights):
+    Index_Stack = []
+    answer = []
+
+    len_max = len(heights)
+    
+    answer.append(0)
+    print(answer)
+    
+    for i in range(len_max):
+        if i == len_max -1:
+            break
+            
+        if heights[i] > heights[i+1]:
+            Index_Stack.append(i)
+            answer.append(i+1)  #기둥 번호, 인덱스 아님, 첫번째 기둥은 무조건 0이므로...
+        elif heights[i] <= heights[i+1]:
+            if len(Index_Stack) == 0:
+                answer.append(0)
+            for j in range(len(Index_Stack)):
+                if heights[Index_Stack[len(Index_Stack) -1 -j]] > heights[i+1]:
+                    answer.append(Index_Stack[len(Index_Stack) -1 -j]+1)
+                    break
+                if j == (len(Index_Stack) - 1):
+                    answer.append(0)
+                    break
+            
+    print(answer)
+    return answer
