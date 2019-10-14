@@ -1,0 +1,16 @@
+def solution(n):
+    answer = ''
+    rest = 0
+    
+    while n > 0 :
+        rest = n%3
+        n = int(n/3)
+        
+        if rest == 0 :
+            n -= 1
+            rest = 4
+    
+        answer = str(rest) + answer
+        print(answer)
+        
+    return answer
