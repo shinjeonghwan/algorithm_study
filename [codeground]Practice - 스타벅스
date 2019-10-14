@@ -1,0 +1,75 @@
+/*
+You should use the statndard input/output
+
+in order to receive a score properly.
+
+Do not use file input and output
+
+Please be very careful.
+*/
+
+#include <stdio.h>
+
+int main(void)
+{
+	int T, test_case;
+
+	setbuf(stdout, NULL);
+
+	scanf("%d", &T);
+	for(test_case = 0; test_case < T; test_case++)
+	{
+
+		/////////////////////////////////////////////////////////////////////////////////////////////
+		/*
+		   Implement your algorithm here.
+		   The answer to the case will be stored in variable Answer.
+		 */
+		/////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Print the answer to standard output(screen).
+
+
+        int N, M, K;
+        int i;
+        int sum = 0;
+        char Answer;
+        char result;
+
+        int price[21] = {0};
+        int men[30] = {0};
+        int pick[21] = {0};
+
+        scanf("%d%d%d",&N,&M,&K);
+
+        for(i=0;i<N;i++)
+        {
+            scanf("%d",&men[i]);
+            pick[men[i]] += 1;
+        }
+
+        for(i=1;i<M+1;i++)
+        {
+            scanf("%d",&price[i]);
+            sum = sum + (pick[i] * price[i]);
+        }
+
+
+        if(sum <= K)
+        {
+            Answer = 'Y';
+        }
+
+        else
+        {
+            Answer = 'N';
+        }
+
+
+		printf("Case #%d\n", test_case+1);
+        printf("%c\n", Answer);
+
+	}
+
+	return 0;//Your program should return 0 on normal termination.
+}
