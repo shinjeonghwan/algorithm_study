@@ -1,0 +1,20 @@
+def solution(arrangement):
+    answer = 0
+    S = []
+    prev = '('
+    arr_len = len(arrangement)
+    
+    for i in range(arr_len):
+        if arrangement[i] == '(':
+            S = S + [arrangement[i]]
+        else:
+            if prev == ')':
+                S.pop()
+                answer += 1
+            else:
+                S.pop()
+                answer += len(S)
+                
+        prev = arrangement[i]
+    
+    return answer
