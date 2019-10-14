@@ -1,0 +1,117 @@
+/*
+You should use the statndard input/output
+
+in order to receive a score properly.
+
+Do not use file input and output
+
+Please be very careful.
+*/
+
+#include <stdio.h>
+#include <math.h>
+#define PI 3.14
+
+
+int main(void)
+{
+	int T, test_case;
+	/*
+	   The freopen function below opens input.txt file in read only mode, and afterward,
+	   the program will read from input.txt file instead of standard(keyboard) input.
+	   To test your program, you may save input data in input.txt file,
+	   and use freopen function to read from the file when using scanf function.
+	   You may remove the comment symbols(//) in the below statement and use it.
+	   But before submission, you must remove the freopen function or rewrite comment symbols(//).
+	 */
+	// freopen("input.txt", "r", stdin);
+
+	/*
+	   If you remove the statement below, your program's output may not be rocorded
+	   when your program is terminated after the time limit.
+	   For safety, please use setbuf(stdout, NULL); statement.
+	 */
+	setbuf(stdout, NULL);
+
+	scanf("%d", &T);
+	for(test_case = 0; test_case < T; test_case++)
+	{
+
+		/////////////////////////////////////////////////////////////////////////////////////////////
+		/*
+		   Implement your algorithm here.
+		   The answer to the case will be stored in variable Answer.
+		 */
+		/////////////////////////////////////////////////////////////////////////////////////////////
+
+        // Print the answer to standard output(screen)
+
+
+        int A,B,C,D,E;
+        int N;
+        double x,y;
+        double angle;
+        int index;
+        double distance;
+        int score = 0;
+
+        int dot_board[20] = {6, 13, 4, 18, 1, 20, 5, 12, 9,  14, 11, 8, 16, 7, 19, 3, 17, 2, 15, 10};
+
+        scanf("%d%d%d%d%d",&A, &B, &C, &D, &E);
+        scanf("%d", &N);
+
+        int i;
+
+        for(i=0;i<N;i++)
+        {
+            scanf("%lf%lf",&x, &y);
+            angle = atan2(y, x)*180/PI;
+            distance = sqrt(pow(x,2) + pow(y,2));
+
+            if(y < 0)
+            {
+                angle = angle + 360;
+            }
+
+            index = (int)(angle/9 +1)/2;
+            if(index >= 20)
+            {
+                index = 0;
+            }
+
+            if(distance < A)    // <= 의  여지가 있을까?
+            {
+                score += 50;
+            }
+            else if(distance > A && distance < B)
+            {
+                score += dot_board[index];
+            }
+            else if(distance > B && distance < C)
+            {
+                score += dot_board[index] * 3;
+            }
+            else if(distance > C && distance < D)
+            {
+                score += dot_board[index];
+            }
+            else if(distance > D && distance < E)
+            {
+                score += dot_board[index] * 2;
+            }
+            else if(distance > E)
+            {
+                score += 0;
+            }
+
+        }
+
+
+
+		printf("Case #%d\n", test_case+1);
+        printf("%d\n", score);
+
+	}
+
+	return 0;//Your program should return 0 on normal termination.
+}
