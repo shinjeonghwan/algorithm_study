@@ -1,0 +1,26 @@
+def solution(d, budget):
+    d.sort()
+    total = 0
+    for value in range(len(d)):
+        total += d[value]
+    temp = d
+    for k in range(len(d)+1):        #리스트의 값을 뒤에서부터 하나씩 지울 것
+        if k == 0:
+            if total > budget:
+                continue
+            else:
+                answer = len(d)
+                return answer
+        temp.pop()
+        total = 0
+        for value in range(len(temp)):
+            total += temp[value]
+        
+        if total > budget:
+            continue
+        else:
+            if(total == 0):
+                return 0
+            else:
+                answer = len(temp)
+                return answer
