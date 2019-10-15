@@ -1,0 +1,23 @@
+def solution(priorities, location):
+    answer = 0
+    num_max = max(priorities)
+    
+    while True:
+        num_max = max(priorities)
+        if priorities[0] == num_max:
+            priorities.pop(0)
+            answer += 1
+            
+            if location == 0:
+                break
+            else:
+                location -= 1
+        else:
+            k = priorities.pop(0)
+            priorities.append(k)
+            if location == 0:
+                location = len(priorities) - 1
+            else:
+                location -= 1
+        
+    return answer
