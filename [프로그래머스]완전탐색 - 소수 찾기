@@ -38,7 +38,35 @@ def solution(numbers):
     ..... 근데 시간초과 에러 뜸.  어느정도 예상한 부분이기는 한데...
     
     에라토스테네스의 체 말고 그냥 소수 판별 알고리즘으로 돌려서 num의 숫자가 소수인 지 아닌 지 확인해야 할 듯
-    (사실상 num리스트도 필요없게 되겠네....) 
     
     
+import itertools
+import math
+
+def solution(numbers):
+    answer = 0
+    num = []
+    len_numbers = len(numbers)
+    for i in range(len_numbers):
+        p = itertools.permutations(numbers, i+1)  # 순열
+        p = list(p)
+        for j in range(len(p)):
+            k = "".join(list(p[j]))
+            k = int(k)
+            if k not in num:
+                num += [k]
     
+    for i in num:
+        if i == 2:
+            answer += 1
+            continue
+        for div in range(2,i):
+            if i % div == 0:
+                break
+            elif div > math.sqrt(i):
+                answer+=1
+                break
+    return answer
+    
+    
+    ############### 변경한 코드, num리스트의 숫자를 소수인 지 아닌 지 판별해서 answer +1 
