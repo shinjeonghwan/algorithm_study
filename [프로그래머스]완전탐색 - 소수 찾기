@@ -1,0 +1,44 @@
+import itertools
+import math
+
+def solution(numbers):
+    answer = 0
+    num = []
+    len_numbers = len(numbers)
+    for i in range(len_numbers):
+        p = itertools.permutations(numbers, i+1)  # 순열
+        p = list(p)
+        for j in range(len(p)):
+            k = "".join(list(p[j]))
+            k = int(k)
+            if k not in num:
+                num += [k]
+    
+    n = pow(10,len_numbers +1)
+    a = [False,False] + [True]*(n-1)
+    primes=[]
+
+    for i in range(2,n+1):
+        if a[i]:
+            primes.append(i)
+        for j in range(2*i, n+1, i):
+            a[j] = False
+    
+    for i in num:
+        if i in primes:
+            answer +=1
+    
+
+    return answer
+    
+    ################################################## 
+    전체 플로우
+    적당히 숫자들의 순열 만들어서 중복되지않게 num 리스트에 넣은 다음 리스트의 값을
+    에라토스테네스의 체로 찾은 소수들과 비교. 있으면 +1 없으면 그냥 넘김.
+    ..... 근데 시간초과 에러 뜸.  어느정도 예상한 부분이기는 한데...
+    
+    에라토스테네스의 체 말고 그냥 소수 판별 알고리즘으로 돌려서 num의 숫자가 소수인 지 아닌 지 확인해야 할 듯
+    (사실상 num리스트도 필요없게 되겠네....) 
+    
+    
+    
