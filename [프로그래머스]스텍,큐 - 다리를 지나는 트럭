@@ -1,0 +1,31 @@
+def solution(bridge_length, weight, truck_weights):
+    Q = [0] * bridge_length
+    answer = 0
+    i = 0
+    i_max = len(truck_weights)
+    
+    if bridge_length == 1:
+        answer = len(truck_weights) + 1
+        return answer
+    while (sum(Q) != 0) or (i == 0):
+        if i < i_max:
+            if sum(Q[1:]) + truck_weights[i] <= weight:
+                Q.pop(0)
+                Q.append(truck_weights[i])
+                answer += 1
+                i += 1
+            else:
+                Q.pop(0)
+                Q.append(0)
+                answer += 1
+        else:
+            Q.pop(0)
+            Q.append(0)
+            answer += 1
+        
+    return answer
+    
+    
+    ###### 망한 코드...
+    ###### 테스트케이스5번이 시간초과 뜸...
+    ###### 
