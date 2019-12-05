@@ -26,6 +26,56 @@ def solution(people, limit):
                 p.pop()
     return answer
     
-    ######## 망한 코드... 시관초과 & 런타임 에러 뜸.
+    ######## 망한 코드... 시간초과 & 런타임 에러 뜸.
     ######## While문에 내가 고려하지 않은 케이스가 들어가서 런타임 에러 뜨는게 아닐까...?
     ######## 좀 더 생각해서 짜봐야지... 
+
+
+
+def solution(people, limit):
+    answer = 0
+    rest = 0
+    people.sort(reverse=True)
+    ary_indx = 0
+    max_indx = len(people)
+    
+    while ary_indx < max_indx:
+        rest = limit - people[ary_indx]
+        if rest < people[max_indx -1]:
+            answer+=1
+            ary_indx+=1
+        elif rest == people[max_indx -1]:
+            answer+=1
+            ary_indx+=1
+            max_indx-=1
+        elif rest > people[max_indx -1]:
+            while rest >= 0:
+                rest = rest - people[max_indx -1]
+                max_indx-= 1
+            answer+=1
+            ary_indx+=1
+    
+  
+    return answer
+    
+    ######## 50점짜리 코드
+    ######## 이 전 코드가 런타임에러 & 시간초과 문제가 발생해서 
+    ######## pop()의 수행시간과 while의 종료조건이 문제라고 판단. pop()이 아닌 indx를 사용하는 방식으로 했는데
+    ######## 런타임에러나 시간초과는 안뜨고, [실패] 시그널만 떴다. if 문 안의 조건이 엉성한 것 같으니 if문 내용을 따져볼 예정
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
