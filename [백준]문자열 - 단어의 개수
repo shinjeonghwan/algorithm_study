@@ -1,0 +1,7 @@
+
+def solution(S):
+    S = S.split()
+    print(len(S))
+if __name__ == '__main__':
+    S = input()
+    solution(S)
