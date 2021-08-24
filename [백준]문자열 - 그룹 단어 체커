@@ -1,0 +1,26 @@
+def solution(S):
+    S = int(S)
+    answer = 0
+    for _ in range(S):
+        sum = 0
+        String = list(input())
+        for x in range(97, 123):
+            try:
+                S_count = String.count(chr(x))   #모두 하나의 알파벳으로 처리된 케이스 생각.  ex asdfgh
+                S_index = String.index(chr(x))
+                if String[S_index + S_count - 1] != String[S_index]:
+                    sum = 0
+                    break
+                else:
+                    sum = 1
+            except ValueError:
+                pass
+        answer += sum
+    print(answer)
+
+if __name__ == '__main__':
+    S = input()
+    solution(S)
+
+
+#실패
