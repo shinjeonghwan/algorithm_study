@@ -1,0 +1,18 @@
+import collections
+
+def solution(S):
+    S = list(S.upper())
+    S_dict = collections.Counter(S)
+
+    if len(S_dict) == 1:
+        print(S_dict.most_common()[0][0])
+    elif S_dict.most_common()[0][1] == S_dict.most_common()[1][1]:
+        print("?")
+    else:
+        print(S_dict.most_common()[0][0])
+
+if __name__ == '__main__':
+    S = input()
+    solution(S)
+
+#예외처리를 생각해야함.
