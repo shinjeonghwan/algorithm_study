@@ -1,0 +1,12 @@
+def solution(S, N):
+    N = list(N)
+    answer = 0
+
+    for sum in N:
+        answer += int(sum)
+
+    print(answer)
+if __name__ == '__main__':
+    S = input()
+    N = input()
+    solution(S, N)
