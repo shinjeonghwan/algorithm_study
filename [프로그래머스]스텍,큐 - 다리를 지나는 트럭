@@ -20,6 +20,5 @@ def solution(bridge_length, weight, truck_weights):
         cnt += 1
         sum_of_bridge = sum_of_bridge - bridge_popped + brideg_appended
     
-    print(cnt)
     answer = cnt
     return answer
