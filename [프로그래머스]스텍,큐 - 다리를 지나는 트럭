@@ -1,70 +1,25 @@
+from collections import deque
 def solution(bridge_length, weight, truck_weights):
-    Q = [0] * bridge_length
+    cnt = 0
     answer = 0
-    i = 0
-    i_max = len(truck_weights)
-    
-    if bridge_length == 1:
-        answer = len(truck_weights) + 1
-        return answer
-    while (sum(Q) != 0) or (i == 0):
-        if i < i_max:
-            if sum(Q[1:]) + truck_weights[i] <= weight:
-                Q.pop(0)
-                Q.append(truck_weights[i])
-                answer += 1
-                i += 1
-            else:
-                Q.pop(0)
-                Q.append(0)
-                answer += 1
+    bridge = deque([0]*bridge_length)
+    sum_of_bridge = sum(bridge)
+    while (sum_of_bridge!=0) or (len(truck_weights) != 0):
+        if len(truck_weights) == 0:
+            cnt += bridge_length
+            break
+        
+        if weight >= sum_of_bridge - bridge[0] + truck_weights[0]:
+            bridge_popped = bridge.popleft()
+            brideg_appended = truck_weights.pop(0)
+            bridge.append(brideg_appended)
         else:
-            Q.pop(0)
-            Q.append(0)
-            answer += 1
-        
+            bridge_popped = bridge.popleft()
+            brideg_appended = 0
+            bridge.append(brideg_appended)
+        cnt += 1
+        sum_of_bridge = sum_of_bridge - bridge_popped + brideg_appended
+    
+    print(cnt)
+    answer = cnt
     return answer
-    
-    
-    ###### 망한 코드...
-    ###### 테스트케이스5번이 시간초과 뜸...
-    ###### 
-    
-    
-    
-def solution(bridge_length, weight, truck_weights):
-    Q = [0] * bridge_length
-    answer = 0
-    answer = 0
-    i_max = len(truck_weights)
-    
-    if bridge_length == 1:
-        answer = len(truck_weights) + 1
-        return answer
-    
-    while truck_weights != []:
-        truck = truck_weights.pop(0)
-        if sum(Q[1:]) + truck <= weight:
-            Q.append(truck)
-            Q.pop(0)
-            answer+=1
-        elif sum(Q[1:]) + truck > weight:
-            truck_weights.insert(0,truck)
-            Q.append(0)
-            Q.pop(0)
-            answer+=1
-        
-    answer += bridge_length
-    return answer
-    
-    ###### 망한 코드...
-    ###### 테스트케이스5번이 시간초과 뜸...
-    ###### 첫 번째 코드와 사실 큰 차이 없음...
-    ###### 다음 코드에서는 Q를 없애는 방향으로 코딩해봐야할 듯
-    
-    
-    
-    
-    
-    
-    
