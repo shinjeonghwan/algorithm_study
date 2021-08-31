@@ -1,1 +1,24 @@
-.
+def solution(n, computers):
+    answer = 0
+    discovered = []
+    
+    def dfs(idx):
+        if idx in discovered:
+            return 
+        
+        discovered.append(idx)
+
+        for idx2 in range(n):
+            if computers[idx][idx2] == 1:
+                dfs(idx2)
+            else:
+                continue
+                
+    
+    for idx in range(n):
+        if idx in discovered:
+            continue
+        dfs(idx)
+        answer += 1
+    
+    return answer
