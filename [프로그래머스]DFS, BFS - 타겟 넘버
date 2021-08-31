@@ -1,1 +1,19 @@
-.
+answer = 0
+def solution(numbers, target):
+    start_idx = 0
+    csum = 0
+
+    def dfs(index, csum):
+        if index == len(numbers):           
+            if csum == target:
+                global answer
+                answer += 1
+                return
+        else:
+            dfs(index + 1, csum + numbers[index])
+            dfs(index + 1, csum - numbers[index])
+
+    dfs(start_idx, csum)
+
+    print(answer)
+    return answer
