@@ -1,0 +1,37 @@
+#include <stdio.h>
+int main()
+{
+    int N;
+    int B;
+
+    scanf("%d %d", &N, &B);
+
+    int rest[100] = { 0, };
+
+    int position = 0;
+    while(1)
+    {
+        rest[position] = N%B;
+        N = N/B;
+
+        position++;
+
+        if(N==0)
+            break;
+    }
+
+    for(int i = position -1; i>=0 ; i--)
+    {
+        if(rest[i]>=10)
+        {
+            printf("%c",rest[i]+55);
+        }
+        else
+        {
+            printf("%d",rest[i]);
+        }
+    }
+
+
+    return 0;
+}
