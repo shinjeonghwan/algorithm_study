@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+
+//투포인터로 푸는데 포인터 사이의 값들이 M 넘어가면 왼쪽 포인터 전진, 사이 합이 M 안넘어 가면 오른쪽 포인터 전진.
+
+int main()
+{
+    int N = 0;
+    int M = 0;
+
+    int cnt = 0;
+
+    int left_pointer = 0;
+    int right_pointer = 0;
+
+
+    int tmp = 0;
+
+    scanf("%d %d",&N, &M);
+
+    int numbers[10000] = {0,};
+
+    for(int i = 0; i < N; i++)
+    {
+        scanf("%d", &tmp);
+        numbers[i] = tmp;
+    }
+
+
+    while(1)
+    {
+
+        int sum = 0;
+
+        for(int i = left_pointer; i <= right_pointer ;i++)
+        {
+            sum+=numbers[i];
+        }
+
+        if(sum == M)
+        {
+            cnt++;
+            right_pointer++;
+            if (right_pointer == N)
+            {
+                right_pointer= N-1;
+                left_pointer++;
+            }
+        }
+        else if(sum < M)
+        {
+            right_pointer++;
+            if (right_pointer == N)
+            {
+                right_pointer= N-1;
+                left_pointer++;
+            }
+        }
+        else if(sum > M)
+        {
+            left_pointer++;
+        }
+
+        if(left_pointer >= N)
+        {
+            break;
+        }
+
+
+
+    }
+
+    printf("%d", cnt);
+
+
+    return 0;
+}
