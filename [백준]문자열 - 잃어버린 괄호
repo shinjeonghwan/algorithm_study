@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+int main()
+{
+    int N = 0;
+    int M = 0;
+    int total_sum = 0;
+    int sum = 0;
+
+    char String_01[51];
+
+    scanf("%s", String_01);
+
+    char *ptr = strtok(String_01, "-");
+    char *stored_string[51] = {NULL, };
+
+
+    stored_string[0] = ptr;
+    ptr = strtok(NULL, " ");
+    stored_string[1] = ptr;
+
+    int sum_of_stored_string = 0;
+
+    ptr = strtok(stored_string[0], "+");
+    while (ptr != NULL)
+    {
+        sum_of_stored_string+=atoi(ptr);
+        ptr = strtok(NULL, "+");
+    }
+
+
+    ptr = strtok(stored_string[1], "+-");
+    while (ptr != NULL)
+    {
+        sum+=atoi(ptr);
+        ptr = strtok(NULL, "+-");
+    }
+    total_sum = sum_of_stored_string - sum;
+
+
+    printf("%d\n", total_sum);
+
+
+    return 0;
+}
