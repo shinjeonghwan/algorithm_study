@@ -1,0 +1,40 @@
+from collections import deque
+
+def solution(M, N, arr, Q):
+
+    def BFS(M, N, arr, Q):
+        dx = [-1, 1, 0, 0]
+        dy = [0, 0, -1, 1]
+
+        while Q:
+            x, y = Q.popleft()
+            for i in range(4):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if 0 <= nx < N and 0 <= ny < M and arr[nx][ny] == 0:
+                    arr[nx][ny] = arr[x][y] + 1
+                    Q.append((nx, ny))
+    result = 0
+    BFS(M, N, arr, Q)
+
+    for row in arr:
+        for element in row:
+            if element == 0:
+                print(-1)
+                exit(0)
+        result = max(result, max(row))
+    print(result-1)
+
+if __name__ == '__main__':
+    M, N = map(int, input().split())
+    arr = []
+    Q = deque()
+    for i in range(N):
+        arr.append(list(map(int, input().split())))
+
+    for i in range(N):
+        for j in range(M):
+            if arr[i][j] == 1:
+                Q.append((i, j))
+
+    solution(M, N, arr, Q)
