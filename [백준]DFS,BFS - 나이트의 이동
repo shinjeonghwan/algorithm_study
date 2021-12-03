@@ -1,0 +1,36 @@
+from collections import deque
+def solution(T):
+    def BFS(I, Q, end_x, end_y, arr):
+        dx = [-2, -1, 1, 2, 2, 1, -1, -2]
+        dy = [1, 2, 2, 1, -1, -2, -2, -1]
+
+        while Q:
+            x, y, step_cnt = Q.popleft()
+            if x == end_x and y == end_y:
+                print(step_cnt)
+                return 0
+            step_cnt += 1
+            for i in range(8):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if 0 <= nx < I and 0 <= ny < I and arr[nx][ny] == 0:
+                    arr[nx][ny] = arr[x][y] + 1
+                    Q.append((nx, ny, step_cnt))
+                if nx == end_x and ny == end_y:
+                    print(step_cnt)
+                    return 0
+
+    for i in range(T):
+        I = int(input())
+        start_x, start_y = map(int, input().split())
+        end_x, end_y = map(int, input().split())
+        step_cnt = 0
+
+        Q = deque()
+        Q.append((start_x, start_y, step_cnt))
+        arr = [[0]*I for i in range(I)]
+        BFS(I, Q, end_x, end_y, arr)
+
+if __name__ == '__main__':
+    T = int(input())
+    solution(T)
