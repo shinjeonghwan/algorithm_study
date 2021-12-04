@@ -1,0 +1,32 @@
+from collections import deque
+def solution(N, M, graph, visited):
+    def DFS(start,  graph, visited):
+        visited[start] = True
+        for i in graph[start]:
+            if not visited[i]:
+                DFS(i, graph, visited)
+        return 0
+
+    res = 0
+    DFS(1, graph, visited)
+
+    for i in visited:
+        if i == True:
+            res += 1
+
+
+    print(res-1)
+
+if __name__ == '__main__':
+    N = int(input())
+    M = int(input())
+
+    graph = [[] for _ in range(N+1)]
+    visited = [False]*(N+1)
+
+    for i in range(M):
+        u, v = map(int, input().split())
+        graph[u].append(v)
+        graph[v].append(u)
+
+    solution(N, M, graph, visited)
