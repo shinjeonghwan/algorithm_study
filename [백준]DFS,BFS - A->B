@@ -1,0 +1,33 @@
+from collections import deque
+def solution(N, M):
+    def BFS(N, M):
+        Q = deque()
+        step_cnt = 1
+        Q.append((N, step_cnt))
+        while Q:
+            x, step = Q.popleft()
+            case1 = x*2
+            case2 = x*10 + 1
+            if case1 == M:
+                return step+1
+            elif case1 < M:
+                Q.append((case1, step+1))
+            else:
+                pass
+
+            if case2 == M:
+                return step+1
+            elif case2 < M:
+                Q.append((case2, step+1))
+            else:
+                pass
+        return -1
+
+
+    res = 0
+    res = BFS(N, M)
+    print(res)
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    solution(N, M)
