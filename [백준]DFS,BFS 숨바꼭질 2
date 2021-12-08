@@ -1,0 +1,27 @@
+from collections import deque
+def solution(N, M):
+    def BFS(N, M):
+        max_step = 100001
+        graph = [[max_step, 0] for _ in range(max_step)]
+        Q = deque()
+        Q.append((N))
+        graph[N][0] = 0
+        graph[N][1] = 1
+
+        while Q:
+            x = Q.popleft()
+            for nx in [x+1, x-1, x*2]:
+                if 0 <= nx < max_step:
+                    if graph[nx][0] == max_step:
+                        Q.append(nx)
+                        graph[nx][0] = graph[x][0] + 1
+                        graph[nx][1] = graph[x][1]
+                    elif graph[nx][0] == graph[x][0] + 1:
+                        graph[nx][1] += graph[x][1]
+        print(graph[M][0])
+        print(graph[M][1])
+    BFS(N, M)
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    solution(N, M)
