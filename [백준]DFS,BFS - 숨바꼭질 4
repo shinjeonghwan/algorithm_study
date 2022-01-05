@@ -1,0 +1,41 @@
+from collections import deque
+import sys
+sys.setrecursionlimit(1000000000)
+
+def solution(N, M):
+
+
+
+    def BFS(N, M):
+        def list_of_root(n, m):
+            if n != m:
+                list_of_root(n, graph[m][1])
+            print(m, end= ' ')
+
+        max_step = 100001
+        graph = [[max_step, 0, False] for _ in range(max_step)]
+        Q = deque()
+        graph[N][0] = 0    #목적지까지 이동 횟수 카운트
+        graph[N][1] = 0    #현재 발판의 전 발판 체크
+        graph[N][2] = True #현재 발판의 방문 여부 체크
+        Q.append(N)
+
+        while Q:
+            x = Q.popleft()
+            if x == M:
+                break
+            for nx in [x+1, x-1, x*2]:
+                if 0 <= nx < max_step and graph[nx][2] == False:
+                    Q.append(nx)
+                    graph[nx][0] = graph[x][0] + 1
+                    graph[nx][1] = x
+                    graph[nx][2] = True
+
+        print(graph[M][0])
+        list_of_root(N, M)
+
+    BFS(N, M)
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    solution(N, M)
