@@ -1,0 +1,84 @@
+from collections import deque
+
+
+def solution(N):
+    def BFS(N):
+        max_step = 1001
+        graph = [[max_step, 0, False] for _ in range(max_step)]
+        Q = deque()
+        graph[1][0] = 0  # 목적지까지 동작 횟수 카운트
+        graph[1][1] = 0  # 현재 발판에 오기까지의 전 클립보드 내의 이모티콘 갯수 체크
+        graph[1][2] = True  # 현재 위치의 방문 여부 체크
+        Q.append(1)
+
+        while Q:
+            x = Q.popleft()
+            if x == N:
+                break
+
+            for nx in [x + graph[x][1], x - 1]:
+                if 2 <= nx < max_step and graph[nx][2] == False:
+                    Q.append(nx)
+                    graph[nx][0] = graph[x][0] + 1
+                    graph[nx][1] = graph[x][1]
+                    graph[nx][2] = True
+
+            if graph[x][2] == True:
+                Q.append(x)
+                graph[x][0] = graph[x][0] + 1
+                graph[x][1] = x
+
+        print(graph[N][0])
+
+    if N == 0:
+        print(1)
+        return
+    BFS(N)
+
+
+if __name__ == '__main__':
+    N = int(input())
+    solution(N)
+    
+    
+    
+    
+    
+    
+    
+    ============================================================================================================
+    
+    
+    
+    
+    
+    
+    
+from collections import deque
+ 
+MAX_SIZE = 1001
+q = deque()
+dist = [[-1] * MAX_SIZE for _ in range(MAX_SIZE)]
+q.append((1, 0))
+dist[1][0] = 0
+N = int(input())
+ 
+while q:
+    s, c = q.popleft()
+    if dist[s][s] == -1:
+        dist[s][s] = dist[s][c] + 1
+        q.append((s, s))
+    if s+c <= N and dist[s+c][c] == -1:
+        dist[s+c][c] = dist[s][c] + 1
+        q.append((s+c, c))
+    if s-1 >= 0 and dist[s-1][c] == -1:
+        dist[s-1][c] = dist[s][c] + 1
+        q.append((s-1, c))
+ 
+ans = -1
+for i in range(0, N+1):
+    if dist[N][i] != -1:
+        if ans == -1 or ans > dist[N][i]:
+            ans = dist[N][i]
+ 
+print(ans)
