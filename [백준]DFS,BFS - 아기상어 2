@@ -1,0 +1,101 @@
+from collections import deque
+def solution(N, M, graph, visited):
+    def BFS(N, M, Q, graph, visited):
+        dx = [-1, 1, 0, 0, -1, -1, 1, 1]
+        dy = [0, 0, -1, 1, 1, -1, 1, -1]
+        #step_cnt = 1
+        while Q:
+            x, y, step_cnt = Q.popleft()
+            for i in range(8):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if 0 <= nx < N and 0 <= ny < M:
+                    if graph[nx][ny] == 1:
+                        step_cnt += 1
+                        return step_cnt
+                    elif graph[nx][ny] == 0:
+                        Q.append((nx, ny, step_cnt+1))
+
+
+    max = -1
+    for i in range(N):
+        for j in range(M):
+            Q = deque()
+            step_cnt = 0
+            if visited[i][j] == False and graph[i][j] == 0:
+                Q.append((i, j, step_cnt))
+                visited[i][j] = True
+                force = BFS(N, M, Q, graph, visited)
+                if force >= max:
+                    max = force
+
+    print(max)
+
+if __name__ == '__main__':
+    N, M= map(int, input().split())
+    #graph = [[0]*M for i in range(N)]
+    graph = []
+    visited = [[False]*M for i in range(N)]
+
+    for i in range(N):
+        data = list(map(int, input().split()))
+        graph.append(data)
+
+    solution(N, M, graph, visited)
+    
+    
+    
+    
+    
+    
+    
+    
+ ==================================================================================================
+    
+    
+    
+from collections import deque
+def solution(N, M, graph, visited):
+    def BFS(N, M, graph, visited):
+        dx = [-1, 1, 0, 0, -1, -1, 1, 1]
+        dy = [0, 0, -1, 1, 1, -1, 1, -1]
+        Q = deque()
+        res = 0
+
+        for i in range(N):
+            for j in range(M):
+                if graph[i][j] == 1:
+                    Q.append((i, j))
+                    visited[i][j] = 0
+
+        while Q:
+            x, y = Q.popleft()
+            for i in range(8):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if 0 <= nx < N and 0 <= ny < M and visited[nx][ny] == -1:
+                    visited[nx][ny] = visited[x][y] + 1
+                    res = max(res, visited[nx][ny])
+                    Q.append((nx, ny))
+
+        print(res)
+
+
+
+
+    BFS(N, M, graph, visited)
+
+if __name__ == '__main__':
+    N, M= map(int, input().split())
+    graph = []
+    visited = [[-1]*M for i in range(N)]
+
+    for i in range(N):
+        data = list(map(int, input().split()))
+        graph.append(data)
+
+    solution(N, M, graph, visited)    
+    
+    
+    
+    
