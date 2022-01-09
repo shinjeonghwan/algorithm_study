@@ -1,0 +1,40 @@
+import sys
+from collections import deque
+def solution(N):
+    Q = deque()
+    for i in range(N):
+        test = sys.stdin.readline().split()
+        if test[0] == 'size':
+            print(len(Q))
+            continue
+        if test[0] == 'pop':
+            if len(Q) != 0:
+                print(Q.popleft())
+            else:
+                print(-1)
+            continue
+        if test[0] == 'empty':
+            if len(Q) == 0:
+                print(1)
+            else:
+                print(0)
+            continue
+        if test[0] == 'push':
+            Q.append(test[1])
+            continue
+        if test[0] =='front':
+            if len(Q) != 0:
+                print(Q[0])
+            else:
+                print(-1)
+            continue
+        if test[0] =='back':
+            if len(Q) != 0:
+                print(Q[-1])
+            else:
+                print(-1)
+            continue
+
+if __name__ == '__main__':
+    N = int(sys.stdin.readline())
+    solution(N)
