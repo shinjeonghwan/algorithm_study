@@ -1,0 +1,30 @@
+import sys
+from collections import deque
+def solution(T):
+    for _ in range(T):
+        N, M = map(int, input().split())
+        list_of_priority = list(map(int, input().split()))
+        sorted_of_priority = sorted(list_of_priority, reverse=True)
+        sorted_of_priority = deque(sorted_of_priority)
+        priority = deque(list_of_priority)
+        Q = deque()
+        for i in range(len(priority)):
+            if i == M:
+                Q.append((priority[i], True))
+            else:
+                Q.append((priority[i], False))
+        cnt = 0
+        while True:
+            num, picked = Q.popleft()
+            if num == sorted_of_priority[0]:
+                sorted_of_priority.popleft()
+                cnt += 1
+                if picked == True:
+                    print(cnt)
+                    break
+            else:
+                Q.append((num, picked))
+
+if __name__ == '__main__':
+    T = int(input())
+    solution(T)
