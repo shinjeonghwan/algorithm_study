@@ -1,0 +1,17 @@
+import sys
+from collections import deque
+def solution(T):
+    for _ in range(T):
+        strings = sys.stdin.readline().split()
+        Q = deque(strings)
+        while Q:
+            verb = Q.popleft()
+            verb_Q = deque(verb)
+            verb_Q.reverse()
+            res = "".join(verb_Q)
+            print(res, end=" ")
+        print()
+
+if __name__ == '__main__':
+    T = int(input())
+    solution(T)
