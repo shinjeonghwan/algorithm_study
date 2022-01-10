@@ -1,0 +1,26 @@
+import sys
+from collections import deque
+def solution(T):
+    for _ in range(T):
+        strings = input()
+        Q = deque(strings)
+        stack = []
+        while Q:
+            input_stack = Q.popleft()
+            if input_stack == '(':
+                stack.append(input_stack)
+            else:
+                if len(stack) != 0:
+                    stack.pop()
+                else:
+                    print("NO")
+                    break
+        else:
+            if len(stack) == 0:
+                print("YES")
+            else:
+                print("NO")
+
+if __name__ == '__main__':
+    T = int(input())
+    solution(T)
