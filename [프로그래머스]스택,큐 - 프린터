@@ -1,0 +1,87 @@
+from collections import deque
+
+def solution(priorities, location):
+    answer = 0
+    priority = deque(priorities)
+    sorted_of_priority = sorted(priorities, reverse=True)
+    sorted_of_priority = deque(sorted_of_priority)
+    
+    Q = deque()
+    for i in range(len(priority)):
+        if i == location:
+            Q.append((priority[i], True))
+        else:
+            Q.append((priority[i], False))
+    cnt = 0
+    
+    while True:
+        num, picked = Q.popleft()
+        if num == sorted_of_priority[0]:
+            sorted_of_priority.popleft()
+            cnt += 1
+            if picked == True:
+                print(cnt)
+                break
+        else:
+            Q.append((num, picked))
+    
+    
+    answer = cnt
+    return answer
+    
+    
+    
+    ============================================================================
+    def solution(priorities, location):
+    answer = 0
+    num_max = max(priorities)
+    
+    while True:
+        num_max = max(priorities)
+        if priorities[0] == num_max:
+            priorities.pop(0)
+            answer += 1
+            
+            if location == 0:
+                break
+            else:
+                location -= 1
+        else:
+            k = priorities.pop(0)
+            priorities.append(k)
+            if location == 0:
+                location = len(priorities) - 1
+            else:
+                location -= 1
+        
+    return answer
+    
+    
+    
+    
+    
+    ============================================================================
+    
+    def solution(priorities, location):
+    jobs = len(priorities)
+    answer = 0
+    cursor = 0
+    while True:
+        if max(priorities) == priorities[cursor%jobs]:
+            priorities[cursor%jobs] = 0
+            answer += 1
+            if cursor%jobs == location:
+                break
+        cursor += 1   
+    return answer
+    
+    
+    [백준] - 프린터 큐 처럼 deque를 두개 이용해서 풀었다.
+
+두번째코드는 이전에 프린터 문제를 풀었을 때 작성했던 코드
+
+제일 아래는
+프로그래머스 다른 풀이 중에 좋아보이는 것 가져온 것
+deque를 굳이 안쓰고 리스트 1개만을 이용해 풀이한 것.
+수학적 개념 cursor%jobs를 이용해서 append()나 pop(0) 연산을 하지 않고 문제를 해결한 것이 인상깊다.
+    
