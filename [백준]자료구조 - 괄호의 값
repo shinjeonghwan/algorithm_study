@@ -1,0 +1,43 @@
+import sys
+from collections import deque
+def solution(S):
+    stack = []
+    ans = 0
+    tmp = 1
+
+    for i in range(len(S)):
+        if S[i] == '(':
+            stack.append(S[i])
+            tmp = tmp * 2
+        if S[i] == '[':
+            stack.append(S[i])
+            tmp = tmp * 3
+        elif S[i] == ')':
+            if not stack or stack[-1] == '[':
+                ans = 0
+                break
+            if S[i-1] == '(':
+                ans = ans + tmp
+            stack.pop()
+            tmp = tmp // 2
+        elif S[i] == ']':
+            if not stack or stack[-1] == '(':
+                ans = 0
+                break
+            if S[i-1] == '[':
+                ans = ans + tmp
+            stack.pop()
+            tmp = tmp // 3
+
+    if len(stack) != 0:
+        print(0)
+        return
+    else:
+        print(ans)
+
+if __name__ == '__main__':
+    S = list(input())
+    solution(S)
+    
+    
+    
