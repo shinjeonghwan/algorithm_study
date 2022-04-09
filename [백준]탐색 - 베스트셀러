@@ -22,3 +22,33 @@ def solution(N):
 if __name__ == '__main__':
     N = int(input())
     solution(N)
+
+
+----------------------------------------------------------------------------
+sort, sorted 안의 key 값의 람다함수를 적용하여 아래와 같이 변경할 수도 있다. 
+
+
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(N):
+    string_dict = defaultdict(int)
+
+    for _ in range(N):
+        string = input()
+        string_dict[string] += 1
+
+    dict_list = []
+    for name, freq in string_dict.items():
+        dict_list.append([name, freq])
+
+    dict_list.sort(key=lambda x:(-x[1], x[0]))   # 1. 두 번째인자에 대해서 내림차순 정렬, 2. 첫번째 인자에 대해서 오름차순 정렬
+                                                 # 결과적으로 판매량이 제일 많은 책들을 앞으로 보내고, 그 책들에 대해서 이름으로 사전식(오름차순) 정렬함.
+    print(dict_list[0][0])
+
+
+
+if __name__ == '__main__':
+    N = int(input())
+    solution(N)
