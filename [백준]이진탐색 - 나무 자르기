@@ -1,0 +1,27 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(N, M, heights):
+    left = 0
+    right = max(heights)+1
+
+    while(left+1 < right):                                      #한 칸인 범위
+        mid = left + (right - left) // 2   
+        sum = 0
+        for tree_height in heights:
+            if (tree_height - mid) > 0:
+                sum += tree_height - mid
+        if sum >= M:
+            left = mid                                          #sum의 값이 M을 만족하면 left를 옮겨서 최대값을 찾는다.
+        else:
+            right = mid                                         #sum의 값이 M을 만족하지 않았으므로, right값이 너무 크다는 뜻, right값을 줄여서 다시 찾아본다.
+
+    print(left)
+
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    heights = list(map(int, input().split()))
+
+    solution(N, M, heights)
