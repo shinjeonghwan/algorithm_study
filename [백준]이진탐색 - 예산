@@ -1,0 +1,32 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(N, M, budgets):
+    left = 0
+    right = max(budgets)
+
+    while(left <= right):
+        mid = left + (right - left) // 2
+        sum_of_budget = 0
+        for budget in budgets:
+            if budget > mid:
+                sum_of_budget += mid
+            else:
+                sum_of_budget += budget
+        #print(left, right, mid, sum_of_budget)
+
+        if sum_of_budget > M:
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    #print("ans : ", left, right, mid, sum_of_budget)
+    print(right)
+
+
+if __name__ == '__main__':
+    N = int(input())
+    budgets = list(map(int, input().split()))
+    M = int(input())
+    solution(N, M, budgets)
