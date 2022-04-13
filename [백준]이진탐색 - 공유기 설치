@@ -87,3 +87,43 @@ int main()
 }
 
 
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(N, C, home_spot):
+    home_spot.sort()
+    left = 1                                     #공유기간 거리를 이진탐색으로 탐색 -> 그때 설치가 가능한 공유기 갯수를 세고, 그게 조건에 넘는지 안넘는지에 따라
+    right = home_spot[-1] - home_spot[0]         #이진탐색으로 mid값을 계속 바꿔가며 계산.
+    ans = 0
+    while(left <= right):
+        mid = left + (right - left) // 2
+        start_spot = home_spot[0]
+        cnt = 1
+        dist = 0
+        for i in range(N):
+            dist = home_spot[i] - start_spot
+            if dist >= mid:
+                cnt += 1
+                start_spot = home_spot[i]
+
+        if cnt >= C:                    #cnt갯수가 C에 딱 맞아도 더 좋은 케이스가(더 넓게 배치하는) 있을 수 있기 때문에 몇번 더 실행해줘야 함.
+            left = mid + 1
+            ans = mid              
+        else:
+            right = mid - 1        #마지막 검증하고 나서 mid 값이 변경되므로 ans에 
+
+    print(ans)
+
+if __name__ == '__main__':
+    N, C = map(int, input().split())
+    home_spot = []
+    for _ in range(N):
+        home_spot.append(int(input()))
+
+    solution(N, C, home_spot)
+
+
