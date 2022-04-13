@@ -1,0 +1,31 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(N, M, lectures):
+    left = max(lectures)
+    right = sum(lectures)
+    ans = 0
+    while(left <= right):
+        mid = left + (right - left) // 2
+        lecture_min = 0
+        cnt = 1
+        for i in range(N):
+            if lecture_min + lectures[i] > mid:
+                cnt += 1
+                lecture_min = 0
+            lecture_min += lectures[i]
+
+        if cnt > M:
+            left = mid + 1
+            ans = mid
+        else:
+            right = mid - 1
+    print(left)
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    lectures = list(map(int, input().split()))
+
+
+    solution(N, M, lectures)
