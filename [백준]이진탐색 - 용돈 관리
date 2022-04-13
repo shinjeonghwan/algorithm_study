@@ -1,0 +1,36 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(N, M, money_list):
+    left = max(money_list)
+    right = sum(money_list)
+
+    while(left <= right):
+        mid = left + (right - left) // 2
+        #print("EEE", left, right)
+        cnt = 0
+        rest_money = 0
+        for i in range(N):
+            if rest_money - money_list[i] < 0:
+                #print("인출함!")
+                cnt += 1
+                rest_money = mid
+
+            rest_money = rest_money - money_list[i]
+            #print("restmoney: ", rest_money)
+        if cnt > M:
+            left = mid + 1
+        else:
+            right = mid - 1
+        #print(mid, cnt)
+    #print("QQQ", left, right)
+    print(left)
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    money_list = []
+    for i in range(N):
+        money_list.append(int(input()))
+
+    solution(N, M, money_list)
