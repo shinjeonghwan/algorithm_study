@@ -1,0 +1,27 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(X, Y):
+    left = 1
+    right = X
+    Z = (Y * 100)//X
+
+    if Z >= 99:
+        print(-1)
+        return 0
+
+    while(left <= right):
+        mid = left + (right - left) // 2
+        modi_win_rate = ((Y+mid) * 100)//(X+mid)
+        #print(mid, modi_win_rate, left, right)
+
+        if modi_win_rate == Z:               #승률이 변하지 않으면
+            left = mid + 1
+        else:                                #승률이 변하면(무조건 상승하는 경우만 있음(무조건 이긴다고 했으므로)
+            right = mid - 1
+    print(left)
+
+if __name__ == '__main__':
+    X, Y = map(int, input().split())
+    solution(X, Y)
