@@ -1,0 +1,40 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(N, M,score_list):
+    left = 0
+    right = max(score_list)
+    res = right
+    while(left <= right):
+        mid = left + (right - left) // 2    #구간의 max - min 값 중 최소값
+        cnt = 1
+        section_max = score_list[0]
+        section_min = score_list[0]
+
+        for score in score_list:
+            if score > section_max:
+                section_max = score
+
+            if score < section_min:
+                section_min = score
+
+            if section_max - section_min > mid:
+                cnt += 1
+                section_max = score
+                section_min = score
+
+        if M >= cnt:
+            right = mid - 1
+            res = min(res, mid)
+        else:
+            left = mid + 1
+
+    print(res)
+
+
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    score_list = list(map(int, input().split()))
+    solution(N, M,score_list)
