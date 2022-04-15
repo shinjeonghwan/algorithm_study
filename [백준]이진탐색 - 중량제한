@@ -1,0 +1,48 @@
+import sys
+from collections import deque
+sys.setrecursionlimit(10000)
+
+def solution(N, M, graph):
+    def BFS(mid, factory_1, factory_2, graph):
+        Q = deque()
+        Q.append(factory_1)
+        visited = set()
+        visited.add(factory_1)
+        while Q:
+            x = Q.popleft()
+            for y, w in graph[x]:
+                if y not in visited and w >= mid:
+                    visited.add(y)
+                    Q.append(y)
+
+        if factory_2 in visited:
+            return True
+        else:
+            return False
+
+
+    factory_1, factory_2 = map(int, input().split())
+    left = 1
+    right = 1000000000
+
+    res = left
+    while left <= right:
+        mid = left + (right-left)//2
+        if BFS(mid, factory_1, factory_2, graph):
+            res = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    print(res)
+
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    graph = [[] for _ in range(N+1)]
+    for i in range(M):
+        A, B, C = map(int, input().split())
+        graph[A].append((B, C))
+        graph[B].append((A, C))
+
+    solution(N, M, graph)
