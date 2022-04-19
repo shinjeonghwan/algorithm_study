@@ -1,0 +1,78 @@
+import sys
+from collections import deque
+sys.setrecursionlimit(10000)
+
+def solution(feild):
+    def BFS(feild, i,j):
+        dx = [0, 0, 1, -1]
+        dy = [1, -1, 0, 0]
+
+        Q = deque()
+        remove_list = []
+        visited = [[False]*6 for i in range(12)]
+
+        visited[i][j] = True
+        Q.append((feild[i][j], i, j))
+        remove_list.append((i,j))
+
+        color_cnt = 1
+        while Q:
+            color, x, y = Q.popleft()
+            for step in range(4):
+                nx = x + dx[step]
+                ny = y + dy[step]
+                if 0 <= nx <= 11 and 0 <= ny <= 5 and feild[nx][ny] != '.' and visited[nx][ny] == False and feild[x][y] == feild[nx][ny]:
+                    color_cnt += 1
+                    visited[nx][ny] = True
+                    Q.append((color, nx, ny))
+                    remove_list.append((nx, ny))
+        else:
+            if color_cnt >= 4:
+                for x, y in remove_list:
+                    feild[x][y] = '.'
+                return True
+            else:
+                return False
+
+    def clear():
+        for y in range(6):
+            queue = deque()
+            for x in range(11, -1, -1):
+                if feild[x][y] != '.':
+                    queue.append(feild[x][y])
+            for x in range(11, -1, -1):
+                if queue:
+                    feild[x][y] = queue.popleft()
+                else:
+                    feild[x][y] = '.'
+
+    chain_cnt = 0
+
+    while True:
+        check = 0
+        for i in range(12):
+            for j in range(6):
+                if feild[i][j] != '.':
+                    if BFS(feild, i, j):
+                        check += 1
+
+        if check == 0:
+            print(chain_cnt)
+            break
+        else:
+            chain_cnt += 1
+
+        clear()
+
+
+#위 작업을 반복하면서 총 몇 연쇄가 일어나는 지 확인함.
+#연쇄가 발생되면, 자기 row의 +1 위치로 데이터를 내려야 함. 그 후 다시 한 사이클 실행.
+
+
+
+
+if __name__ == '__main__':
+    feild = []
+    for _ in range(12):
+        feild.append(list(input()))
+    solution(feild)
