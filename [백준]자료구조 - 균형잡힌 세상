@@ -1,0 +1,41 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(list_of_balance):
+
+    for line in list_of_balance:
+        stack = []
+        flag = True
+        for char in line:
+            if char == '(' or char == '[':
+                stack.append(char)
+
+            if char == ')':
+                if len(stack) >= 1 and stack[-1] == '(':
+                    stack.pop()
+                else:
+                    flag = False
+
+            if char == ']':
+                if len(stack) >= 1 and stack[-1] == '[':
+                    stack.pop()
+                else:
+                    flag = False
+
+        if flag == True and len(stack) == 0:
+            print("yes")
+        else:
+            print("no")
+
+
+if __name__ == '__main__':
+    list_of_balance = []
+
+    while True:
+        input_string = input()
+        if input_string == ".":
+            break
+        list_of_balance.append(list(input_string)[:-1])
+
+    solution(list_of_balance)
