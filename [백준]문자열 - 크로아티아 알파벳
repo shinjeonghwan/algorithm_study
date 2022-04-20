@@ -1,0 +1,36 @@
+import sys
+from collections import deque
+sys.setrecursionlimit(10000)
+
+def solution(string):
+    alphabet_cnt = 0
+
+    while string:
+        char_1 = string.pop()
+        alphabet_cnt += 1
+        if char_1 == '=':
+            if string[-1] == 'c' or string[-1] == 's':
+                string.pop()
+            elif string[-1] == 'z':
+                string.pop()
+                if len(string) >= 1:
+                    if string[-1] == 'd':
+                        string.pop()
+        elif char_1 == '-':
+            if string[-1] == 'c' or string[-1] == 'd':
+                string.pop()
+        elif char_1 == 'j':
+            if len(string) >= 1:
+                if string[-1] == 'n' or string[-1] == 'l':
+                    string.pop()
+    else:
+        print(alphabet_cnt)
+
+if __name__ == '__main__':
+    string = deque()
+    list_of_char = list(input())
+
+    for char in list_of_char:
+        string.append(char)
+
+    solution(string)
