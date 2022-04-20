@@ -1,0 +1,27 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(my_dict):
+        answer = []
+
+        for key, value in my_dict.items():
+            if value >= 2:
+                answer.append(key)
+
+        answer.sort()
+        print(len(answer))
+        for ans in answer:
+            print(ans)
+
+
+
+
+if __name__ == '__main__':
+    N, M= map(int, input().split())
+
+    my_dict = defaultdict(int)
+    for _ in range(N+M):
+        my_dict[input()] += 1
+
+    solution(my_dict)
