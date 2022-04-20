@@ -1,0 +1,22 @@
+import sys
+from collections import deque
+sys.setrecursionlimit(10000)
+
+def solution(string):
+    voca_list = list(set(string))
+    voca_list.sort(key=lambda x:(x[1], x[0]))
+
+    for voca in voca_list:
+        print(voca[0])
+
+
+
+if __name__ == '__main__':
+    N = int(input())
+    voca_list = []
+    for _ in range(N):
+        voca = input()
+        len_voca = len(voca)
+        voca_list.append((voca, len_voca))
+
+    solution(voca_list)
