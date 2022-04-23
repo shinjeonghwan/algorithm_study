@@ -1,0 +1,32 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(input_string, input_keyword):
+    stack = []
+    keyword_len = len(input_keyword)
+
+    for char in input_string:
+        stack.append(char)
+        if char == input_keyword[-1] and len(stack) >= len(input_keyword):
+            if stack[-keyword_len:] == input_keyword:
+                for _ in range(keyword_len):
+                    stack.pop()
+
+    if stack:
+        print("".join(stack))
+    else:
+        print("FRULA")
+
+
+
+
+
+if __name__ == '__main__':
+    list_of_string = []
+    remove_keyword = ""
+
+    input_string = list(input())
+    input_keyword = list(input())
+
+    solution(input_string, input_keyword)
