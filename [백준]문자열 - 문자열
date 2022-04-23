@@ -1,0 +1,31 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(A_string, B_string):
+    len_diff = len(B_string) - len(A_string)
+    cnt = 0
+    res = 51
+    if len_diff == 0:
+        for i in range(len(B_string)):
+            if B_string[i] != A_string[i]:
+                cnt += 1
+    else:
+        for i in range(len_diff+1):
+            sub_B_string = B_string[i:i+len(A_string)]
+            cnt = 0
+            for j in range(len(sub_B_string)):
+                if sub_B_string[j] != A_string[j]:
+                    cnt += 1
+            else:
+                res = min(res, cnt)
+
+    print(min(res,cnt))
+
+
+
+
+if __name__ == '__main__':
+    A_string, B_string = input().split()
+
+    solution(A_string, B_string)
