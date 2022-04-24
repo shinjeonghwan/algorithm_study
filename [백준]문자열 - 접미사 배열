@@ -1,0 +1,20 @@
+import sys
+from collections import defaultdict
+import math
+sys.setrecursionlimit(10000)
+
+def solution(S):
+    list_of_S = []
+    for i in range(len(S)):
+        list_of_S.append(S[i:])
+
+    list_of_S.sort()
+    for s in list_of_S:
+        print(s)
+
+
+
+if __name__ == '__main__':
+    S = input()
+
+    solution(S)
