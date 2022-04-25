@@ -1,0 +1,24 @@
+import sys
+from collections import defaultdict
+import math
+sys.setrecursionlimit(10000)
+
+def solution(N):
+    sum_of_N = 0
+
+    for i in N:
+        sum_of_N += int(i)
+
+    N.sort(reverse=True)
+    if sum_of_N % 3 == 0 and N[-1] == '0':
+        str = "".join(N)
+        print(str)
+    else:
+        print(-1)
+
+
+
+if __name__ == '__main__':
+    N = list(input())
+
+    solution(N)
