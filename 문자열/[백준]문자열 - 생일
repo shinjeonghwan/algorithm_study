@@ -1,0 +1,17 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+def solution(N, name_list):
+    name_list.sort(key=lambda x:(x[3],x[2],x[1]))
+    print(name_list[-1][0])
+    print(name_list[0][0])
+
+if __name__ == '__main__':
+    N = int(input())
+    name_list = []
+    for i in range(N):
+        name, dd, mm, yyyy = input().split()
+        name_list.append((name, int(dd), int(mm), int(yyyy)))
+
+    solution(N, name_list)
