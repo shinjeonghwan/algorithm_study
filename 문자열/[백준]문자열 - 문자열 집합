@@ -1,0 +1,23 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+
+def solution(S, search):
+    cnt = 0
+    for str in search:
+        if S[str] != 0:
+            cnt+=1
+    print(cnt)
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+
+    S = defaultdict(int)
+    search = []
+    for _ in range(N):
+        S[input()] = 1
+
+    for _ in range(M):
+        search.append(input())
+    solution(S, search)
