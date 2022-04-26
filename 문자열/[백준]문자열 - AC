@@ -1,1 +1,38 @@
-ㅔ스트
+import sys
+from collections import deque
+sys.setrecursionlimit(10000)
+
+
+def solution(T):
+    for _ in range(T):
+        p = input()
+        n = int(input())
+        Q = input()[1:-1].split(",")
+
+        if n == 0:
+            Q = []
+
+        p.replace('RR', '')
+        r = 0
+        l = 0
+        toggle = False
+        for com in p:
+            if com == 'R':
+                toggle = not toggle
+            elif com == 'D':
+                if toggle == True:
+                    r +=1
+                else:
+                    l +=1
+        else:
+            if l+r <= n:
+                Q = Q[l:len(Q)-r]
+                if toggle == False:
+                    print("[" + ",".join(Q) + "]")
+                else:
+                    print("[" + ",".join(Q[::-1]) + "]")
+            else:
+                print("error")
+if __name__ == '__main__':
+    T = int(input())
+    solution(T)
