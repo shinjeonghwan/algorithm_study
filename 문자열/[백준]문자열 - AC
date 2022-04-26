@@ -15,7 +15,7 @@ def solution(T):
         p.replace('RR', '')
         r = 0
         l = 0
-        toggle = False
+        toggle = False   #정방향   (왼쪽에서 제일 앞에 문자 삭제하기)
         for com in p:
             if com == 'R':
                 toggle = not toggle
