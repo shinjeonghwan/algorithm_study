@@ -1,0 +1,19 @@
+import sys
+from collections import deque
+sys.setrecursionlimit(10000)
+import re
+
+def solution(T):
+    for _ in range(T):
+        N = input()
+        m = re.compile('(100+1+|01)+')
+        res = m.fullmatch(N)
+
+        if res:
+            print("YES")
+        else:
+            print("NO")
+
+if __name__ == '__main__':
+    T = int(input())
+    solution(T)
