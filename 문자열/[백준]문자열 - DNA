@@ -1,0 +1,39 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+import re
+
+def solution(N, M, DNA_list):
+    res = []
+    val = N*M
+
+    select_DNA = []
+
+    for j in range(M):
+        dict = defaultdict(int)
+        for i in range(N):
+            dict[DNA_list[i][j]] +=1
+        else:
+            sorted_dict = sorted(dict.items(), key = lambda item:(-item[1],item[0]))
+            select_DNA.append(sorted_dict[0][0])
+    else:
+        select_DNA_str = "".join(select_DNA)
+
+    hamming = 0
+    for i in range(N):
+        for j in range(M):
+            if select_DNA[j] != DNA_list[i][j]:
+                hamming+=1
+
+    else:
+        print(select_DNA_str)
+        print(hamming)
+
+
+if __name__ == '__main__':
+    N, M = map(int,input().split())
+    DNA_list = []
+    for i in range(N):
+        DNA_list.append(input())
+
+    solution(N, M, DNA_list)
