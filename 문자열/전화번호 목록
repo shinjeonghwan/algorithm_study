@@ -1,0 +1,101 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+
+class Node(object):
+    def __init__(self, key, data=None):
+        self.key = key
+        self.data = data
+        self.children = {}
+
+class Trie(object):
+    def __init__(self):
+        self.head = Node(None)
+
+    # 문자열 삽입
+    def insert(self, string):
+        curNode = self.head
+        # 삽입할 string 각각의 문자에 대해 자식 Node를 만들며 내려간다.
+        for char in string:
+            # 자식 Node들 중 같은 문자가 없으면 Node 새로 생성
+            if char not in curNode.children:
+                curNode.children[char] = Node(char)
+            # 같은 문자가 있으면 해당 노드로 이동
+            curNode = curNode.children[char]
+        curNode.data = string
+
+    # 문자열이 존재하는지 탐색
+    def search(self, string):
+        curNode = self.head
+
+        for char in string:
+            if char in curNode.children:
+                curNode = curNode.children[char]
+            else:
+                return False
+
+        if curNode.children:
+            return False
+        else:
+            return True
+
+
+def solution(T):
+    for _ in range(T):
+        N = int(sys.stdin.readline().rstrip())
+        numbers_list = Trie()
+        num_list = []
+
+        for i in range(N):
+            phone_num = sys.stdin.readline().rstrip()
+            num_list.append(phone_num)
+            numbers_list.insert(phone_num)
+
+        num_list.sort()
+        for num in num_list:
+            if not numbers_list.search(num):
+                print("NO")
+                break
+        else:
+            print("YES")
+
+if __name__ == '__main__':
+    T = int(sys.stdin.readline().rstrip())
+
+    solution(T)
+    
+    
+    
+    
+    
+    
+    
+    
+============================================================================================
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+
+def solution(T):
+    for _ in range(T):
+        N = int(sys.stdin.readline().rstrip())
+        num_list = []
+        for i in range(N):
+            phone_num = sys.stdin.readline().rstrip()
+            num_list.append(phone_num)
+
+        num_list.sort()
+        for i in range(N-1):
+            long = len(num_list[i])
+            if num_list[i] == num_list[i+1][:long]:
+                print("NO")
+                break
+        else:
+            print("YES")
+
+if __name__ == '__main__':
+    T = int(sys.stdin.readline().rstrip())
+
+    solution(T)
