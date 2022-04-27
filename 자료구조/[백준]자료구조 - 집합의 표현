@@ -1,0 +1,36 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(1000000000)
+
+def union(parent, a, b):
+    x = parent_find(parent, a)
+    y = parent_find(parent, b)
+    if x > y:
+        parent[x] = y
+    else:
+        parent[y] = x
+
+def parent_find(parent, k):
+    if k != parent[k]:
+        parent[k] = parent_find(parent, parent[k])
+    return parent[k]
+
+
+def solution(N, M):
+    parent = [i for i in range(N+1)]
+
+    for _ in range(M):
+        com, a, b = map(int, sys.stdin.readline().split())
+
+        if com == 0:
+            union(parent,a,b)
+        elif com == 1:
+            if parent_find(parent, a) == parent_find(parent, b):
+                print("YES")
+            else:
+                print("NO")
+
+
+if __name__ == '__main__':
+    N, M = map(int, sys.stdin.readline().split())
+    solution(N, M)
