@@ -1,0 +1,49 @@
+import sys
+from collections import defaultdict
+sys.setrecursionlimit(10000)
+
+
+def solution(N, list_of_sequence):
+    stack = []
+    num = 0
+    answer = []
+    for i in list_of_sequence:
+        if len(stack) != 0 and num < i:
+            for _ in range(i-num):
+                num += 1
+                stack.append(num)
+                answer.append("+")
+            else:
+                a = stack.pop()
+                answer.append("-")
+        elif len(stack) != 0 and stack[-1] == i:
+            b = stack.pop()
+            answer.append("-")
+        elif len(stack) != 0 and num > i:
+            c = stack.pop()
+            if c == i:
+                answer.append("-")
+                cnt = 0
+            elif c != i:
+                answer.append("NO")
+                break
+        else:
+            for _ in range(i-num):
+                num +=1
+                stack.append(num)
+                answer.append("+")
+            else:
+                a2 = stack.pop()
+                answer.append("-")
+    if "NO" in answer:
+        print("NO")
+    else:
+        for ans in answer:
+            print(ans)
+
+
+
+if __name__ == '__main__':
+    N = int(input())
+    list_of_sequence = [int(input()) for _ in range(N)]
+    solution(N, list_of_sequence)
