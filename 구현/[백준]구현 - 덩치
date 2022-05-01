@@ -1,0 +1,32 @@
+import sys
+from collections import deque
+sys.setrecursionlimit(1000000000)
+
+def solution(N, mass_list):
+    rank_list = []
+
+    for i in range(N):
+        cnt = 0
+        for j in range(N):
+            if i == j:
+                continue
+            if mass_list[i][0] < mass_list[j][0] and mass_list[i][1] < mass_list[j][1]:
+                cnt += 1
+        else:
+            rank_list.append(cnt+1)
+
+    for i in rank_list:
+        print(i, end=" ")
+
+
+
+
+if __name__ == '__main__':
+    N = int(input())
+    mass_list = []
+
+    for _ in range(N):
+        x, y = map(int, input().split())
+        mass_list.append((x,y,0))
+
+    solution(N, mass_list)
