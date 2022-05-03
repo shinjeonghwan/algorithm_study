@@ -1,0 +1,65 @@
+import sys
+from collections import deque
+from itertools import combinations
+import copy
+sys.setrecursionlimit(1000000000)
+
+def BFS(N, M, graph, virus, cnt):
+    Q = deque()
+    for i, j in virus:
+        Q.append((i, j))
+
+    dx = [-1, 0, 1, 0]
+    dy = [0, -1, 0, 1]
+
+    while Q:
+        x, y = Q.popleft()
+        for i in range(4):
+            nx = x + dx[i]
+            ny = y + dy[i]
+            if 0 <= nx < N and 0 <= ny < M and graph[nx][ny] == 0:
+                graph[nx][ny] = 2
+                Q.append((nx, ny))
+                cnt +=1
+
+    return cnt
+
+
+
+def solution(N, M, graph):
+    list_graph = copy.deepcopy(graph)
+    potential_wall_list = []
+    virus_list = []
+    wall_list = []
+
+    for i in range(N):
+        for j in range(M):
+            if list_graph[i][j] == 0:
+                potential_wall_list.append((i, j))
+            elif list_graph[i][j] == 2:
+                virus_list.append((i, j))
+            elif list_graph[i][j] == 1:
+                wall_list.append((i,j))
+    combination_wall_list = list(combinations(potential_wall_list, 3))
+
+    cnt = len(virus_list)
+    wall_cnt = len(wall_list)
+    empty_cnt = len(potential_wall_list) - 3 + cnt
+
+    ans = N*M
+    for test_list in combination_wall_list:
+        copy_graph = copy.deepcopy(graph)
+        for i, j in test_list:
+            copy_graph[i][j] = 1
+        res = BFS(N, M, copy_graph, virus_list, cnt)
+        ans = min(ans, res)
+
+    #abs_res = N*M - wall_cnt -3 - ans
+    abs_res = empty_cnt - ans
+    print(abs_res)
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    graph = [list(map(int, input().split())) for _ in range(N)]
+
+    solution(N, M, graph)
