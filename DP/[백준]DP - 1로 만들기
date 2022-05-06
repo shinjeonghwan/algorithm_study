@@ -1,1 +1,24 @@
 
+import sys
+from collections import defaultdict
+from itertools import permutations
+sys.setrecursionlimit(1000000000)
+
+def solution(N):
+    memo = [0, 0, 1, 1]
+
+    for i in range(4, N+1):
+        memo.append(memo[i-1]+1)
+        if i%2 == 0:
+            memo[i] = min(memo[i//2]+1, memo[i])
+        if i%3 == 0:
+            memo[i] = min(memo[i//3]+1, memo[i])
+    print(memo[N])
+
+if __name__ == '__main__':
+    N = int(sys.stdin.readline().rstrip())
+    solution(N)
+
+
+
+
