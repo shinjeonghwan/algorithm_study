@@ -1,0 +1,45 @@
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+
+def solution(msg):
+    answer = []
+    alpha_dict = defaultdict()
+    cnt = 26
+    Q = deque(['\0', 'A', 'B', 'C', 'D', 'E', \
+               'F', 'G', 'H', 'I', 'J', 'K', 'L', \
+               'M', 'N', 'O', 'P', 'Q', 'R', 'S', \
+               'T', 'U', 'V', 'W', 'X', 'Y', 'Z'])
+
+    for i in range(len(Q)):
+        alpha_dict[Q[i]] = i
+
+    msg_Q = deque(msg)
+
+    while msg_Q:
+        Q_cnt = 1
+        stack = []
+        W = msg_Q[0]
+        if W in alpha_dict:
+            stack.append(alpha_dict[W])
+            for i in range(1, len(msg_Q)):
+                sub = list(itertools.islice(msg_Q, 0, i+1))
+                W2 = "".join(sub)
+                if W2 in alpha_dict:
+                    #answer.append(alpha_dict[W2])
+                    stack.append(alpha_dict[W2])
+                    Q_cnt += 1
+                else:
+                    answer.append(stack[-1])
+                    cnt += 1
+                    alpha_dict[W2] = cnt
+                    break
+            else:
+                answer.append(stack[-1])
+
+        for _ in range(Q_cnt):
+            _ = msg_Q.popleft()
+
+    #print(answer)
+    return answer
