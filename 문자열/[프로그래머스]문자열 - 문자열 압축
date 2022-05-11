@@ -1,0 +1,52 @@
+def solution(s):
+    answer = 0
+    step = 1
+    last_step = len(s) // 2
+    ans = []
+    start, end = 0, step
+
+    prev_str = s[start:end]
+    curr_str = ""
+    tmp_str = ""
+
+    cnt = 1
+
+    while step <= last_step:
+        start += step
+        end += step
+        if end > len(s):
+            if cnt >= 2:
+                tmp_str = tmp_str + str(cnt) + prev_str
+            else:
+                tmp_str = tmp_str + prev_str
+            tmp_str = tmp_str + s[start:]
+            ans.append(tmp_str)
+            step += 1
+            start, end = 0, step
+            prev_str = s[start:end]
+            cnt = 1
+            curr_str = ""
+            tmp_str = ""
+            continue
+
+        curr_str = s[start:end]
+        if prev_str == curr_str:
+            # 압축이 되면, 압축한 내용을 카운팅
+            cnt += 1
+
+        else:
+            # 현재까지 압축한 값을 tmp_str에 입력
+            if cnt >= 2:
+                tmp_str = tmp_str + str(cnt) + prev_str
+                cnt = 1
+            else:
+                tmp_str = tmp_str + prev_str
+                cnt = 1
+            prev_str = curr_str
+
+    answer = len(s)
+    for i in ans:
+        answer = min(answer, len(i))
+    
+    
+    return answer
