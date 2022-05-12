@@ -1,0 +1,53 @@
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import permutations
+sys.setrecursionlimit(1000000000)
+
+
+max_val = 0
+def solution(N, M, field):
+    def DFS(x, y, depth, s):
+        dx = [-1, 0, 1, 0]
+        dy = [0, 1, 0, -1]
+        global max_val
+        if s + maxv * (4 - depth) <= max_val:  # 현재 위치부터 최대한의 경우로 찾아도 현재 기록된 max_val보다 작으면 그냥 나머지 작업 포기
+            return
+        if depth >= 4:            # s는 지금까지 지나온 길들의 합산 값.  현재 DFS 수행이 4번째 칸이고 max_val을 바꿀만한 내용인 지 아닌 지 고민하는 거.
+            if max_val < s:
+                max_val = s
+            return
+        else:
+            for idx in range(4):       #그래프 탐색 국룰
+                nx = x + dx[idx]
+                ny = y + dy[idx]
+                if 0 <= nx < N and 0 <= ny < M and visited[nx][ny] == False:
+                    if depth == 2:                                             #뎁스가 2일 때는 'ㅜ','ㅏ','ㅗ','ㅓ' 모양 처리를 위해
+                        visited[nx][ny] = True
+                        DFS(x, y, depth + 1, s + field[nx][ny])
+                        visited[nx][ny] = False
+
+                    visited[nx][ny] = True
+                    DFS(nx, ny, depth + 1, s + field[nx][ny])
+                    visited[nx][ny] = False
+
+    maxv = max(map(max, field))
+    global max_val
+    visited = [[False] * M for _ in range(N)]
+    for i in range(N):
+        for j in range(M):
+            visited[i][j] = True                #현재 위치 visited는 처리하면서 DFS를 진행해야 하지만, 다음 진행에서는 전부 visited를 싹 다 풀어줘야 DFS를 수행할 수 있으므로 이렇게 처리.
+            DFS(i, j, 1, field[i][j])           #deepcopy를 쓸 수도 있을텐데, 그렇게 되면 deepcopy를 너무 자주, 많이 쓰니까 손해, 좌료를 DFS에서 쓸 때마다 True/False 형태로 만드는 게 좋은 듯.
+            visited[i][j] = False
+
+    print(max_val)
+
+
+
+
+if __name__ == '__main__':
+    N, M = map(int, sys.stdin.readline().split())
+    field = [list(map(int,sys.stdin.readline().split())) for _ in range(N)]   #배열을 입력받기
+
+    solution(N, M, field)
