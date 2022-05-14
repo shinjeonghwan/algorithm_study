@@ -44,7 +44,7 @@ def solution(N, field):
         field[sx][sy] = 0
         while graph_Q:
             x, y, cur_cnt = graph_Q.popleft()
-            if cur_cnt > res_len:
+            if cur_cnt+1 > res_len:
                 break
 
             for i in range(4):
@@ -56,7 +56,7 @@ def solution(N, field):
                     #print(nx, ny)
 
                     if 0 < field[nx][ny] < size:
-                        res_len = cur_cnt
+                        res_len = cur_cnt+1
                         dist_list.append((nx, ny, cur_cnt + 1))
                         #print("찾음")
                         #print(res_len)
@@ -72,7 +72,9 @@ def solution(N, field):
         result = BFS(sx, sy, field)
 
         if len(result) > 0:
+            print(result)
             result.sort()
+            print(result)
             #print("BFS 결과 : ", end=" ")
             #print(result[0][0], result[0][1], result[0][2])
             ans_time += result[0][2]
