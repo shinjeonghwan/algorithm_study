@@ -1,0 +1,94 @@
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import permutations
+sys.setrecursionlimit(1000000000)
+
+def check_field(N, field):
+    for i in range(N):
+        for j in range(N):
+            if field[i][j] == 9:
+                sx, sy = i, j
+    return sx, sy
+
+
+def call_parent_shark(N, field):
+    global size
+    fish_Q = deque()
+    for i in range(N):
+        for j in range(N):
+            if 0 < field[i][j] < size:
+                fish_Q.append((i, j, field[i][j]))
+
+    if len(fish_Q) != 0:
+        return True
+
+    elif len(fish_Q) == 0:
+        return False
+
+
+ans_time = 0
+size = 2
+
+def solution(N, field):
+    def BFS(sx, sy, field):
+        graph_Q = deque()
+        graph_Q.append((sx, sy, 0))
+        dx = [-1, 0, 0, 1]
+        dy = [0, -1, 1, 0]
+        visited = [[False]*N for _ in range(N)]
+        res_len = sys.maxsize
+        dist_list = []
+        visited[sx][sy] = True
+        field[sx][sy] = 0
+        while graph_Q:
+            x, y, cur_cnt = graph_Q.popleft()
+            if cur_cnt > res_len:
+                break
+
+            for i in range(4):
+                nx = x + dx[i]
+                ny = y + dy[i]
+                if 0 <= nx < N and 0 <= ny < N and visited[nx][ny] == False and field[nx][ny] <= size:
+                    visited[nx][ny] = True
+                    graph_Q.append((nx, ny, cur_cnt + 1))
+                    #print(nx, ny)
+
+                    if 0 < field[nx][ny] < size:
+                        res_len = cur_cnt
+                        dist_list.append((nx, ny, cur_cnt + 1))
+                        #print("찾음")
+                        #print(res_len)
+        return dist_list
+
+
+    global ans_time
+    global size
+    sx, sy = check_field(N, field)
+    res_len = 0
+    exp = 0
+    while True:
+        result = BFS(sx, sy, field)
+
+        if len(result) > 0:
+            result.sort()
+            #print("BFS 결과 : ", end=" ")
+            #print(result[0][0], result[0][1], result[0][2])
+            ans_time += result[0][2]
+            field[result[0][0]][result[0][1]] = 0
+            exp += 1
+            if exp % size == 0:
+                size += 1
+                exp = 0
+            sx, sy = result[0][0], result[0][1]
+        else:
+            break
+
+    print(ans_time)
+
+
+if __name__ == '__main__':
+    N = int(sys.stdin.readline())
+    field = [list(map(int, sys.stdin.readline().split())) for _ in range(N)]   #배열을 입력받기
+    solution(N, field)
