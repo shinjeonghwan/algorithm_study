@@ -1,0 +1,36 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+
+
+def solution(S):
+    S.sort()
+    tmp = ""
+    center = ""
+    alpha_list = defaultdict(int)
+    for s in S:
+        alpha_list[s] += 1
+    else:
+        odd_cnt = 0
+        for c in alpha_list:
+            if alpha_list[c] % 2 == 1:        #홀수인 글자가 2개 이상이면 팰린드롬 못하니까 예외처리
+                odd_cnt+=1
+                center = c
+                alpha_list[c] = alpha_list[c] - 1
+            if odd_cnt >= 2:
+                print("I'm Sorry Hansoo")
+                return
+    for c in alpha_list:
+        tmp += c*(alpha_list[c]//2)
+    print(tmp+center+tmp[::-1])
+
+
+
+if __name__ == '__main__':
+    S = list(sys.stdin.readline().rstrip())
+    solution(S)
