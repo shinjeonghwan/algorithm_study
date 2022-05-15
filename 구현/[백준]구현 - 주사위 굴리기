@@ -1,0 +1,52 @@
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import permutations
+sys.setrecursionlimit(1000000000)
+
+def dice_struct(dice, direction):
+    a, b, c, d, e, f = dice[0], dice[1], dice[2], dice[3], dice[4] ,dice[5]   #윗면, 동쪽, 아랫면, 서쪽, 북쪽, 남쪽
+    if direction == 1: #동쪽으로 굴리기
+        dice[0], dice[1], dice[2], dice[3], dice[4] ,dice[5] = d, a, b, c, e, f
+    elif direction == 2: #서쪽으로 굴리기
+        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = b, c, d, a, e, f
+    elif direction == 3: #북쪽으로 굴리기
+        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = f, b, e, d, a, c
+    elif direction == 4: #남쪽으로 굴리기
+        dice[0], dice[1], dice[2], dice[3], dice[4], dice[5] = e, b, f, d, c, a
+    return dice
+
+
+
+
+def solution(N, M, x, y, K, field, command):
+    direction_x = [0, 0, 0, -1, 1]              #0번 인덱스는 아무것도 처리 안함, 인덱스 이쁘게 쓰려고 추가해놓은 것.
+    direction_y = [0, 1, -1, 0, 0]
+    dice = [0, 0, 0, 0, 0, 0]
+
+    for cmd in command:
+        nx = x + direction_x[cmd]
+        ny = y + direction_y[cmd]
+        #print(nx, ny)
+        if 0 <= nx < N and 0 <= ny < M:
+            dice = dice_struct(dice, cmd)
+            if field[nx][ny] == 0:
+                field[nx][ny] = dice[2]
+            elif field[nx][ny] != 0:
+                dice[2] = field[nx][ny]
+                field[nx][ny] = 0
+            x, y = nx, ny
+            print(dice[0])
+
+
+
+
+
+
+if __name__ == '__main__':
+    N, M, x, y, K = map(int, sys.stdin.readline().split())
+    field = [list(map(int, sys.stdin.readline().split())) for _ in range(N)]
+    command = list(map(int, sys.stdin.readline().split()))
+
+    solution(N, M, x, y, K, field, command)
