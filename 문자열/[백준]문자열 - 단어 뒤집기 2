@@ -1,0 +1,42 @@
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import permutations
+sys.setrecursionlimit(1000000000)
+
+
+
+def solution(S):
+    stack = []
+    ans = ""
+    tmp = []
+    for s in S:
+        stack.append(s)
+        if stack[-1] == '<':
+            #'<'는 빼고 현재까지 스택에 있는 내용 역순으로 출력
+            tmp = stack.pop()
+            ans = "".join(stack[::-1])
+            print(ans, end="")
+            stack = []
+            stack.append(tmp)
+        elif stack[-1] == '>':
+            #현재까지 스택에 있는 내용 바로 출력
+            ans = "".join(stack)
+            print(ans, end="")
+            stack = []
+        elif stack[-1] == ' ':
+            if stack[0] != '<':
+                #역방향 문자열 출력
+                stack.pop()
+                ans = "".join(stack[::-1])
+                print(ans, end="")
+                print(' ', end="")
+                stack = []
+    else:
+        ans = "".join(stack[::-1])
+        print(ans, end="")
+
+if __name__ == '__main__':
+    S = list(sys.stdin.readline().rstrip())
+    solution(S)
