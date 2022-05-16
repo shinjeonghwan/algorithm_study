@@ -1,0 +1,31 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+
+
+def solution(S, verb):
+    S_len = len(S)
+    verb_len = len(verb)
+    start, end = 0, verb_len
+    cnt = 0
+
+    while end <= S_len:
+        if verb == S[start:end]:
+            start += verb_len
+            end += verb_len
+            cnt += 1
+        else:
+            start +=1
+            end += 1
+    print(cnt)
+
+
+if __name__ == '__main__':
+    S = sys.stdin.readline().rstrip()
+    verb = sys.stdin.readline().rstrip()
+    solution(S, verb)
