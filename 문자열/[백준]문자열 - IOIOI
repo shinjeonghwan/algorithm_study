@@ -1,0 +1,37 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+
+#Pn 패턴을 직접 그려서 일일히 비교하면 시간초과로 50점밖에 못받음. 
+
+def solution(N, M, S):
+    cnt = 0
+    ans = 0
+    idx = 0
+
+    while idx < M-2:                  #IOI 패턴을 이용해서 패턴이 발견될 때마다 cnt를 추가하는 형태로 문제 해결
+        if S[idx] == "I" and S[idx+1] == "O" and S[idx+2] == "I":      #현재 idx를 기준으로 IOI가 존재하면 cnt +=1 해줌. 
+            cnt +=1
+            idx += 2                        #idx를 2칸씩 띄워야 IOI`에서 I`IOIOIO형태로 `가 붙은 쪽에서 다시 시작할 수 있으므로 IOI 패턴찾기 수월.
+            if cnt == N:                                               #그때의 N값과 cnt가 같으면 I(OI)*N 이라는 뜻이므로 Pn 문자열 한 개를 찾은 것.
+                ans+=1
+                cnt -=1              #Pn은 IOI인데 IOIOIOIOI 형태로 쭉 이어져있는 문자열일 수도있으니 cnt-=1 로 다음 것도 찾을 수 있도록 처리
+        else:
+            cnt = 0
+            idx+=1                   #IOI 패턴 못찾았으면 idx를 한 칸씩 이동하면서 찾음 
+    print(ans)
+
+
+
+
+
+if __name__ == '__main__':
+    N = int(sys.stdin.readline().rstrip())
+    M = int(sys.stdin.readline().rstrip())
+    S = sys.stdin.readline().rstrip()
+    solution(N, M, S)
