@@ -1,0 +1,28 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+def solution():
+    tree_dict = defaultdict(int)
+    tree_num = 0
+    while True:
+        input_tree = sys.stdin.readline().rstrip()
+        if not input_tree:
+            break
+        tree_num += 1
+        tree_dict[input_tree] += 1
+
+    tree_list = list(tree_dict.keys())
+    tree_list.sort()
+
+    for tree in tree_list:
+        #print(tree + " " + str(round(tree_dict[tree]/tree_num*100, 4)))
+        print('%s %.4f' %(tree, tree_dict[tree]/tree_num*100))
+
+
+if __name__ == '__main__':
+    solution()
