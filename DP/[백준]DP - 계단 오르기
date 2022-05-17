@@ -1,0 +1,31 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+def solution(N, floor_list):
+    if N == 1:
+        print(floor_list[1])
+
+    else:
+        d = [0] * (N+1)
+        d[1] = floor_list[1]
+        d[2] = floor_list[1] + floor_list[2]
+
+        for i in range(3, N+1):
+            d[i] = max(d[i-3] + floor_list[i-1] + floor_list[i], d[i-2] + floor_list[i])
+
+        print(d[N])
+
+if __name__ == '__main__':
+    N = int(sys.stdin.readline().rstrip())
+    floor_list = [0]
+
+    for _ in range(N):
+        step = int(sys.stdin.readline().rstrip())
+        floor_list.append(step)
+
+    solution(N, floor_list)
