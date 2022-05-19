@@ -1,0 +1,28 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+def solution(N):
+    ans = 0
+
+    d = [0] * 91
+
+    d[0] = 0
+    d[1] = 1
+    d[2] = 1
+    d[3] = 2
+    d[4] = 3
+    d[5] = 5
+
+    for i in range(2, N+1):
+        d[i] = d[i-1] + d[i-2]
+
+    print(d[N])
+
+if __name__ == '__main__':
+    N = int(sys.stdin.readline().rstrip())
+    solution(N)
