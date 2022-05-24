@@ -1,0 +1,28 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+def solution(line):
+    stack = []
+    ans = 0
+    for i in range(len(line)):
+        if line[i] == "(":
+            stack.append(i)
+        else:
+            if line[i-1] == "(":
+                stack.pop()
+                ans += len(stack)
+            else:
+                stack.pop()
+                ans +=1
+
+    print(ans)
+
+
+if __name__ == '__main__':
+    line = list(sys.stdin.readline().rstrip())
+    solution(line)
