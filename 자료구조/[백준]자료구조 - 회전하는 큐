@@ -1,0 +1,31 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+def solution(N, M, pos):
+    Q = deque([(i+1) for i in range(N)])
+    cnt = 0
+    for i in pos:
+        while True:
+            if Q[0] == i:
+                Q.popleft()
+                break
+            else:
+                if Q.index(i) < len(Q)/2:
+                    while Q[0] != i:
+                        Q.append(Q.popleft())
+                        cnt+=1
+                else:
+                    while Q[0] != i:
+                        Q.appendleft(Q.pop())
+                        cnt+=1
+    print(cnt)
+
+if __name__ == '__main__':
+    N, M = map(int,sys.stdin.readline().split())
+    pos = list(map(int,sys.stdin.readline().split()))
+    solution(N, M, pos)
