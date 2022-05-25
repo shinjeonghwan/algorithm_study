@@ -1,0 +1,22 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+def solution(N):
+    d = [0] * (1000000+1)
+
+    d[1] = 1
+    d[2] = 2
+
+    for i in range(3, N+1):
+        d[i] = (d[i-2] + d[i-1])%15746
+
+    print(d[N])
+
+if __name__ == '__main__':
+    N = int(sys.stdin.readline().rstrip())
+    solution(N)
