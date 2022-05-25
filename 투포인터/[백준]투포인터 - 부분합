@@ -1,0 +1,32 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+def solution(N, S, sequence):
+    s, e = 0, 0
+    ans = sys.maxsize
+    sum_of_sequence = 0
+    while True:
+        if sum_of_sequence >= S:
+            ans = min(ans, e - s)
+            sum_of_sequence -= sequence[s]
+            s += 1
+        elif e == N:
+            break
+        else:
+            sum_of_sequence += sequence[e]
+            e += 1
+
+    if ans == sys.maxsize:
+        print(0)
+    else:
+        print(ans)
+
+if __name__ == '__main__':
+    N, S = map(int, sys.stdin.readline().split())
+    sequence = list(map(int, sys.stdin.readline().split()))
+    solution(N, S, sequence)
