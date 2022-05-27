@@ -1,0 +1,22 @@
+import math
+import sys
+from collections import defaultdict
+from collections import deque
+import itertools
+from itertools import combinations
+sys.setrecursionlimit(1000000000)
+
+def solution(N,P):
+    d = [0] * 1001
+    d[1] = P[1]
+
+    for i in range(1, N+1):
+        for j in range(1, i+1):
+            d[i] = max(d[i-j] + P[j], d[i])
+
+    print(d)
+
+if __name__ == '__main__':
+    N = int(sys.stdin.readline())
+    P = [0] + list(map(int, sys.stdin.readline().split()))
+    solution(N, P)
