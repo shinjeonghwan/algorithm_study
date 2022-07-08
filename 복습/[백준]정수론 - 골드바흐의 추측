@@ -1,0 +1,55 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include<cmath>
+
+using namespace std;
+
+bool che[1000001];
+int prime_num[1000001];
+int N;
+int idx = 0;
+bool flag = false;
+int main(){
+    che[0] = false;
+    che[1] = false;
+    che[2] = true;
+
+        for(int i = 2; i<=1000001; i++) che[i] = true;
+
+        for(int i = 2; i<=1000001; i++){
+            if(che[i]){
+                prime_num[idx++] = i;
+                for(long long j = (long long)i*i; j<=1000001; j += i){
+                    if (!che[j]) continue;
+                    che[j] = false;
+                }
+            }
+        }
+
+    while(true){
+        scanf("%d", &N);
+        if(N==0) break;
+
+        int a = 0, b = 0;
+
+        for(int i = 0; i < idx; i++){
+            if(prime_num[i] > N) break;
+            if(che[N-prime_num[i]]){
+                a = prime_num[i];
+                b = N - prime_num[i];
+                break;
+            }
+        }
+
+        if(a==0){
+            printf("Goldbach's conjecture is wrong.\n");
+        }
+        else{
+            printf("%d = %d + %d\n", N, a, b);
+        }
+
+
+    }
+    return 0;
+}
