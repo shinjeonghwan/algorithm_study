@@ -1,0 +1,114 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+
+using namespace std;
+
+int main(void){
+  int N, M;
+  vector<int> A;
+  int num;
+  scanf("%d %d", &N, &M);
+
+  for(int i = 0; i<N; i++){
+    scanf("%d", &num);
+    A.push_back(num);
+  }
+
+  int point_a = 0;
+  int point_b = 0;
+
+  int sum = A[point_b];
+  int ans = 0;
+
+  while(point_b < N){
+
+        if (sum == M){
+            ans++;
+            sum = sum - A[point_a];
+            point_a++;
+
+        }
+        else if(sum < M){
+            point_b++;
+            if(point_b < N){
+                sum = sum + A[point_b];
+            }
+            else{
+                break;
+            }
+
+        }
+
+        else if (sum > M){
+            sum -= A[point_a];
+            point_a++;
+        }
+  }
+
+
+  printf("%d", ans);
+
+
+
+
+  return 0;
+}
+
+==========================================================================================================================================
+
+
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+
+using namespace std;
+
+int main(void){
+  int N, M;
+  vector<int> A;
+  int num;
+  scanf("%d %d", &N, &M);
+
+  for(int i = 0; i<N; i++){
+    scanf("%d", &num);
+    A.push_back(num);
+  }
+
+  int sum = 0;
+  int ans = 0;
+  for (int i = 0; i<N; i++){
+    sum = A[i];
+    if (sum == M){
+        ans++;
+        continue;
+    }
+    for(int j = i+1; j<N; j++){
+        sum += A[j];
+        if (sum > M){
+            break;
+        }
+        else if(sum < M){
+            continue;
+        }
+        else{
+            ans++;
+            break;
+        }
+    }
+  }
+
+
+
+  printf("%d", ans);
+
+
+
+
+  return 0;
+}
+
+
