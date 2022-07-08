@@ -1,0 +1,64 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int gcd(int a, int b){
+    if(b == 0) return a;
+    return gcd(b, a%b);
+}
+
+int main(){
+
+    int T;
+    scanf("%d", &T);
+
+    for (int z = 0; z < T; z++){
+            long long K, C;
+
+            scanf("%lld %lld", &K, &C);
+
+            if(gcd(K, C) != 1){
+                printf("IMPOSSIBLE\n");
+                continue;
+            }
+
+            if (C == 1){
+                if (K+1 > 1000000000){
+                    printf("IMPOSSIBLE\n");
+                    continue;
+                }
+                printf("%lld\n", K+1);
+                continue;
+            }
+
+            if (K == 1){
+                printf("1\n");
+                continue;
+            }
+
+
+            long long r, q, tmpK = K, t, t1=0, t2=1;
+
+            while(C!=0){
+                q = K/C;
+                r = K%C;
+                t = t1 - q*t2;
+
+                K = C;
+                C = r;
+                t1 = t2;
+                t2 = t;
+            }
+
+            while(t1 < 0) t1 += tmpK;
+            if(t1 > 1000000000){
+                printf("IMPOSSIBLE\n");
+                continue;
+            }
+            printf("%lld\n", t1);
+    }
+
+    return 0;
+}
