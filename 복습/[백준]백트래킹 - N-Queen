@@ -1,0 +1,114 @@
+#include <iostream>
+using namespace std;
+
+int N;
+int answer = 0;
+int c[15];
+
+
+
+void solution(int y){
+    if( y == N){
+        answer++;
+        return;
+    }
+
+    int gap;
+    int d[15];
+    for(int i = 0; i<N; i++){
+        d[i] = -1;
+    }
+
+    for(int i = 0; i<N; i++){
+        if(c[i] != -1){
+            gap = y - c[i];
+            if(i + gap < N) d[i + gap] = c[i];
+            if(i - gap >= 0) d[i - gap] = c[i];
+        }
+    }
+
+    for(int i = 0; i<N; i++){
+        if(c[i] == -1 && d[i] == -1){
+            c[i] = y;
+            solution(y + 1);
+            c[i] = -1;
+        }
+    }
+
+}
+
+
+
+
+int main() {
+    scanf("%d", &N);
+
+    for (int i = 0; i < N; i++) c[i] = -1;
+
+
+    solution(0);
+
+    printf("%d",answer);
+
+
+    return 0;
+}
+
+
+
+
+
+
+========================================================================================================================
+
+
+
+#include <iostream>
+using namespace std;
+
+int N;
+int answer = 0;
+int queen_pos[15];
+
+
+int pos_check(int y){
+    for(int i = 0; i< y; i++){
+        if ((queen_pos[i] == queen_pos[y]) || (y - i == (abs(queen_pos[y] - queen_pos[i])))){                            //윗쪽에 고정된 퀸 아래에서, 좌우로 움직이는 퀸
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+
+void solution(int y){
+    if( y == N){
+        answer++;
+        return;
+    }
+
+    else{
+        for(int i = 0; i < N; i++){ //한 행에 하나의 퀸. (위 아래로 움직이는 퀸)
+            queen_pos[y] = i;
+
+            if(pos_check(y)){
+                solution(y+1);
+            }
+        }
+    }
+}
+
+
+
+
+int main() {
+    scanf("%d", &N);
+
+    solution(0);
+
+    printf("%d",answer);
+
+
+    return 0;
+}
