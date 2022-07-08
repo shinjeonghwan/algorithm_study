@@ -1,0 +1,253 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int MAX = 4000;
+// 투포인터
+int N, ans, arr[4][MAX+1];
+vector<int> ab, cd;
+
+int main(){ios::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
+cin >> N;
+for (int i = 0; i < N; ++i)
+	cin >> arr[0][i] >> arr[1][i] >> arr[2][i] >> arr[3][i];
+// A, B 가능한 모든 합 저장
+for (int i = 0; i < N; ++i)
+	for (int j = 0; j < N; ++j)
+		ab.push_back(arr[0][i]+arr[1][j]);
+// C, D 가능한 모든 합 저장
+for (int i = 0; i < N; ++i)
+	for (int j = 0; j < N; ++j)
+		cd.push_back(arr[2][i]+arr[3][j]);
+sort(ab.begin(),ab.end());
+sort(cd.begin(),cd.end());
+
+long long res = 0;
+int lo = 0, hi = N*N - 1;
+// ab의 큰값부터, cd의 작은값부터 본다.
+while(hi >= 0 && lo < N * N){
+	// 합이 0 인 경우
+	if(-ab[hi] == cd[lo]){
+		// ao: 해당 ab 개수, at: 해당 cd 개수
+		int ao = 0, at = 0;
+		int temp = cd[lo];
+		while ((-ab[hi] == temp) && hi >= 0)
+			ao++, hi--;
+		while (cd[lo]==temp && lo<N*N)
+			at++, lo++;
+		// 구하고자 하는건 모든 '쌍의 수'이다.
+		res += (long long)ao*at;
+	}
+	//절대값 비교
+	else if (-ab[hi] < cd[lo])
+		hi--;
+	else
+		lo++;
+}
+cout << res << '\n';
+
+return 0;
+}
+
+
+============================================================================================================================================
+
+
+
+#include <iostream>
+#include <algorithm>
+#define MAX 4000
+using namespace std;
+
+int N;
+int Arr[4][MAX], UP[MAX*MAX], DOWN[MAX*MAX];
+
+long long ans = 0;
+
+int main(){
+    scanf("%d", &N);
+    long long num;
+    long long sum = 0;
+    int Idx = 0;
+
+    for (int i = 0; i < N; i++){
+        for (int j = 0; j < 4; j++){
+            cin >> Arr[j][i];
+        }
+    }
+
+
+    for (int i = 0; i < N; i++){
+        for (int j = 0; j < N; j++){
+                UP[Idx] = Arr[0][i] + Arr[1][j];
+                DOWN[Idx] = Arr[2][i] + Arr[3][j];
+                Idx++;
+        }
+    }
+
+    sort(UP, UP+Idx);
+    sort(DOWN, DOWN+Idx);
+
+    int point_a = 0;
+    int point_b = N*N-1;
+
+
+    while(point_a < N*N && point_b >= 0){
+        if (UP[point_a] + DOWN[point_b] == 0){
+            long long same_UP_cnt = 0;
+            long long same_DOWN_cnt = 0;
+            int tmp = point_a;
+
+            while(UP[point_a] + DOWN[point_b] == 0){
+                if( (point_a >= N*N)) break;
+                point_a++;
+                same_UP_cnt++;
+            }
+
+            while(UP[tmp] + DOWN[point_b] == 0 ){
+                if (point_b < 0) break;
+                point_b--;
+                same_DOWN_cnt++;
+
+            }
+            ans += same_UP_cnt*same_DOWN_cnt;
+        }
+
+        else if(-DOWN[point_b] < UP[point_a]){
+            point_b--;
+        }
+        else{
+            point_a++;
+        }
+    }
+
+    printf("%lld\n", ans);
+
+    return 0;
+}
+
+
+============================================================================================================================================
+
+
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int N;
+
+vector<long long> A;
+vector<long long> B;
+vector<long long> C;
+vector<long long> D;
+
+vector<long long> UP;
+vector<long long> DOWN;
+
+long long UP_tmp_ptr;
+long long DOWN_tmp_ptr;
+
+
+int main(){
+    scanf("%d", &N);
+    long long num;
+    long long sum = 0;
+    long long ans = 0;
+
+    for (int i = 0; i < N; i++){
+        for (int j = 0; j < 4; j++){
+            scanf("%lld", &num);
+            if (j == 0) A.push_back(num);
+            if (j == 1) B.push_back(num);
+            if (j == 2) C.push_back(num);
+            if (j == 3) D.push_back(num);
+        }
+    }
+
+
+    for (int i = 0; i < N; i++){
+        for (int j = 0; j < N; j++){
+                sum = A[i] + B[j];
+                UP.push_back(sum);
+        }
+    }
+
+    for (int i = 0; i < N; i++){
+        for (int j = 0; j < N; j++){
+                sum = C[i] + D[j];
+                DOWN.push_back(sum);
+        }
+    }
+/*
+
+    UP.push_back(5);
+    UP.push_back(-5);
+    UP.push_back(5);
+    UP.push_back(1);
+    UP.push_back(-6);
+    UP.push_back(-7);
+    UP.push_back(2);
+    UP.push_back(2);
+
+    DOWN.push_back(-5);
+    DOWN.push_back(-5);
+    DOWN.push_back(-5);
+    DOWN.push_back(6);
+    DOWN.push_back(7);
+    DOWN.push_back(-2);
+    DOWN.push_back(7);
+    DOWN.push_back(1);
+
+*/
+    sort(UP.begin(), UP.end());
+    sort(DOWN.begin(), DOWN.end());
+
+    int point_a = 0;
+    int point_b = N*N-1;
+
+    //for (int i = 0; i < DOWN.size(); i++){
+    //    printf("idx : %d, UP : %d, DOWN : %d\n", i, UP[i], DOWN[i]);
+    //}
+
+    while(point_a < N*N && point_b >= 0){
+        //printf("sum : %d, point_a : %d, point_b : %d, UP : %d, DOWN : %d\n", sum, point_a, point_b, UP[point_a], DOWN[point_b]);
+        if (-DOWN[point_b] == UP[point_a]){
+            //printf("sum!!!\n");
+
+            int same_UP_cnt = 0;
+            int same_DOWN_cnt = 0;
+            int tmp = UP[point_a];
+
+            while((UP[point_a] == tmp) && (point_a < N*N)){
+                point_a++;
+                same_UP_cnt++;
+            }
+
+            while((-DOWN[point_b] == tmp) && (point_b >= 0)){
+                point_b--;
+                same_DOWN_cnt++;
+
+            }
+            ans += (long long)same_UP_cnt*same_DOWN_cnt;
+            //printf("ans : %d, Up_cnt : %d, Donw_cnt %d\n",ans, same_UP_cnt, same_DOWN_cnt);
+        }
+
+        else if(-DOWN[point_b] < UP[point_a]){
+            point_b--;
+        }
+        else{
+            point_a++;
+        }
+    }
+
+    printf("%lld\n", ans);
+
+    return 0;
+}
+
+
+
+
+
