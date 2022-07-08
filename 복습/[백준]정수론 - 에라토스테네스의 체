@@ -1,0 +1,36 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+bool che[1001];
+int N, K;
+
+int main(){
+
+    scanf("%d %d", &N, &K);
+
+    che[0] = false;
+    che[1] = false;
+
+    for(int i = 2; i<=N; i++) che[i] = true;
+
+    int ans = -1;
+
+    for(int i = 2; i<=N; i++){
+        if(che[i]){
+            for(int j = i; j<=N ; j += i){
+                if (!che[j]) continue;
+                che[j] = false;
+                if(--K==0) ans =j;
+
+            }
+        }
+        if (K == 0) break;
+    }
+
+    printf("%d\n",ans);
+
+    return 0;
+}
