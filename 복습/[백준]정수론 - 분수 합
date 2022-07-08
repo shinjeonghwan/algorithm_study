@@ -1,0 +1,28 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int N, M ,K, T;
+
+int gcd(int a, int b){
+    if(b == 0) return a;
+    return gcd(b, a%b);
+}
+
+
+int main(){
+    scanf("%d %d %d %d", &N, &M, &K, &T);
+    int bunmo;
+    int bunja;
+    int g;
+
+    bunmo = M * T;
+    bunja = N*T + M*K;
+    g = gcd(bunmo, bunja);
+
+    printf("%d %d\n", bunja/g, bunmo/g);
+
+    return 0;
+}
