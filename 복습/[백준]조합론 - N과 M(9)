@@ -1,0 +1,47 @@
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int N, M;
+int arr[8];
+int ans[8];
+bool check[8];
+
+void bt(int depth){
+    if(depth==M){
+        for(int i = 0; i<M; i++){
+            printf("%d ", ans[i]);
+        }
+        printf("\n");
+        return;
+    }
+
+    int prev = -1;
+
+    for(int i = 0; i<N; i++){
+        if(!check[i] && prev != arr[i]){
+            check[i] = true;
+            ans[depth] = arr[i];
+            prev = arr[i];
+            bt(depth+1);
+            check[i] = false;
+        }
+    }
+}
+
+
+
+int main(){
+    scanf("%d %d", &N, &M);
+
+    for (int i = 0; i<N; i++){
+        scanf("%d", &arr[i]);
+    }
+
+    sort(arr, arr+N);
+
+    bt(0);
+
+    return 0;
+}
