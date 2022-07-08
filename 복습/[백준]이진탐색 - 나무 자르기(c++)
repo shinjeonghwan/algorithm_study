@@ -1,0 +1,56 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int main(void){
+
+    vector<long long> trees;
+    long long N, M;
+    long long num, max_val = 0;
+
+    scanf("%lld %lld", &N, &M);
+
+    for(long long i = 0; i<N; i++){
+        scanf("%lld", &num);
+        trees.push_back(num);
+        if (max_val < num){
+            max_val = num;
+        }
+    }
+
+    long long sum = 0;
+    int ans = 0;
+    long long left = 1;
+    long long right = max_val+1;
+    long long mid = 0;
+
+
+    while(left <= right){
+        mid = left + (right - left) / 2;
+        sum = 0;
+
+        for (long long i = 0; i < trees.size(); i++){
+            if (trees[i] - mid > 0){
+                sum += trees[i] - mid;
+            }
+        }
+
+        if (sum >= M){
+            if(ans<mid){
+                ans = mid;
+            }
+            left = mid + 1;
+        }
+
+        else{
+            right = mid - 1;
+        }
+    }
+
+
+    printf("%lld", ans);
+
+    return 0;
+}
