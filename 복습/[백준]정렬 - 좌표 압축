@@ -1,0 +1,46 @@
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int N;
+
+vector<pair<long long int, long long int>> arr;
+vector<pair<long long int, long long int>> ans;
+
+int main(){
+
+    scanf("%d", &N);
+    long long tmp;
+    long long cnt = 0;
+
+    for (int i = 0; i< N; i++){
+        scanf("%lld", &tmp);
+        arr.push_back({tmp, i});
+        ans.push_back({tmp, 0});
+    }
+
+    sort(arr.begin(), arr.end());
+
+
+    tmp = -1000000001;
+    for (int i = 0; i< N; i++){
+
+        if (tmp == arr[i].first){
+            ans[arr[i].second].second = cnt-1;
+            continue;
+        }
+
+        tmp = arr[i].first;
+        ans[arr[i].second].second = cnt;
+        cnt++;
+    }
+
+    for (int i = 0; i< N; i++){
+        printf("%lld ", ans[i].second);
+    }
+
+
+    return 0;
+}
