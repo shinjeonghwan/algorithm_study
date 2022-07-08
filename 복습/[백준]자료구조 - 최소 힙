@@ -1,0 +1,83 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+
+using namespace std;
+
+int PQ[1024*128*2];
+int PQ_idx;
+
+void swap(int &a, int &b){
+    int tmp = a;
+    a = b;
+    b = tmp;
+}
+
+
+
+
+
+int main(){
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
+
+    PQ_idx = 1;
+
+    int N;
+    cin >> N;
+
+    for (int i = 0; i<N; i++){
+        int x;
+        cin >> x;
+
+        if (x == 0){  //루트 노드값 삭제 및 출력 / 이 후 다시 PQ조립
+            if (PQ_idx==1) printf("0\n");
+            else{
+                printf("%d\n", PQ[1]);
+                PQ[1] = PQ[--PQ_idx];
+                int idx = 1;
+                int left_child = idx * 2;
+                int right_child = idx * 2 + 1;
+
+                while(idx * 2 + 1 < PQ_idx){
+                        left_child = idx*2;
+                        right_child = idx*2 +1;
+
+                        if(PQ[idx] <= PQ[left_child] && PQ[idx] <= PQ[right_child]) break;
+                        else if (PQ[left_child] < PQ[right_child]){
+                            swap(PQ[idx], PQ[left_child]);
+                            idx = left_child;
+                        }
+                        else{
+                            swap(PQ[idx], PQ[right_child]);
+                            idx = right_child;
+                        }
+                }
+                left_child = idx*2;
+                if (left_child < PQ_idx && PQ[left_child] < PQ[idx]){
+                    swap(PQ[idx], PQ[left_child]);
+                }
+            }
+
+
+        }
+        else{        //PQ에 새로운 값 추가 + PQ 조립
+            PQ[PQ_idx++] = x;
+
+            int k = PQ_idx -1, t = k >> 1;
+            while(k > 1 && PQ[k] < PQ[t]){
+                swap(PQ[k], PQ[t]);
+                k = t;
+                t = (k >> 1);
+            }
+
+        }
+
+    }
+
+
+
+
+    return 0;
+}
