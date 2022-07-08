@@ -1,0 +1,164 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+
+
+string cmd;
+vector <string> v;
+vector <long long> stack;
+long long cnt;
+long long num;
+
+
+void calc(long long num) {
+    stack.clear();
+    stack.push_back(num);
+
+    for(int i=0; i< v.size(); i++){
+        cmd = v[i];
+        if (cmd == "NUM"){
+            i++;
+            cmd = v[i];
+            stack.push_back(stoll(cmd));
+        }
+        else if (cmd == "POP"){
+            if(stack.size() == 0){
+                printf("ERROR");
+                return;
+            }
+            stack.erase(stack.end()-1);
+        }
+        else if (cmd == "INV"){
+            if (stack.size()==0){
+                printf("ERROR");
+                return;
+            }
+            stack[stack.size()-1] *= -1;
+        }
+        else if (cmd == "DUP"){
+            if(stack.size() == 0){
+                printf("ERROR");
+                return;
+            }
+            long long tmp = stack[stack.size() - 1];
+            stack.push_back(tmp);
+        }
+        else if (cmd == "SWP"){
+            if(stack.size() < 2){
+                printf("ERROR");
+                return;
+            }
+
+            swap(stack[stack.size() - 1], stack[stack.size() -2]);
+        }
+        else if (cmd =="ADD"){
+            if(stack.size() < 2){
+                printf("ERROR");
+                return;
+            }
+            long long tmp = stack[stack.size() - 1];
+            stack.erase(stack.end() -1);
+            stack[stack.size() -1] += tmp;
+        }
+        else if (cmd == "SUB"){
+            if(stack.size() < 2){
+                printf("ERROR");
+                return;
+            }
+            long long tmp = stack[stack.size() - 1];
+            stack.erase(stack.end() -1);
+            stack[stack.size() -1] -= tmp;
+        }
+        else if (cmd == "MUL"){
+            if(stack.size() < 2){
+                printf("ERROR");
+                return;
+            }
+            long long tmp = stack[stack.size() - 1];
+            stack.erase(stack.end() -1);
+            stack[stack.size() -1] *= tmp;
+        }
+        else if (cmd == "DIV"){
+            if(stack.size() < 2){
+                printf("ERROR");
+                return;
+            }
+            long long tmp = stack[stack.size() - 1];
+            if (tmp == 0){
+                printf("ERROR");
+                return;
+            }
+            int pm=0;
+            if (stack[stack.size() - 1] < 0) pm++;
+            if (stack[stack.size() - 2] < 0) pm++;
+            stack.erase(stack.end() -1);
+            stack[stack.size() - 1] = abs(stack[stack.size() -1]) / abs(tmp) * (pm % 2 ? -1 : 1);
+        }
+        else if (cmd == "MOD"){
+            if(stack.size() < 2){
+                printf("ERROR");
+                return;
+            }
+            long long tmp = stack[stack.size() - 1];
+            if (tmp == 0){
+                printf("ERROR");
+                return;
+            }
+            stack.erase(stack.end() -1);
+            stack[stack.size() -1] %= tmp;
+        }
+    }
+
+    if (stack.size() != 1){
+        printf("ERROR");
+        return;
+    }
+
+    if (abs(stack[0]) > 1e9) {
+        printf("ERROR");
+        return;
+    }
+    printf("%d", stack[0]);
+    return;
+
+}
+
+
+int main() {
+    int cc = 0;
+
+    while(true)
+    {
+        cin >> cmd;
+        if (cmd.compare("QUIT") == 0)
+        {
+            break;
+        }
+
+
+        else if(cmd == "END"){
+            if (cc != 0){
+                printf("\n");
+            }
+            cc++;
+
+            scanf("%d", &cnt);
+            for(int i = 0; i < cnt; i++)
+            {
+                scanf("%d", &num);
+                calc(num);
+                printf("\n");
+            }
+            v.clear();
+
+        }
+        else{
+            v.push_back(cmd);
+
+        }
+    }
+
+    return 0;
+}
