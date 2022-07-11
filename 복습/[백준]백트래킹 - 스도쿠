@@ -1,1 +1,100 @@
-#### 복습
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int N, num;
+long long arr[9][9];
+
+
+void bt(int y, int x){
+    if (y == 0){
+        //종료조건
+    }
+
+    if (arr[y][x] == 0){           //숫자를 채워넣어야 하는 상황인 경우
+
+        for(int i = 1; i <= 9; i++){     //1~9까지의 숫자로 채워넣으면서 매번 검사, 조건에 만족하면 다음 위치에 대해서 bt() 실행, 만족하지 않으면 돌아가서 다시 다음 숫자를 가지고 bt 실행
+
+            for (int j = 0 ; j < 9; j++){ //현재 좌표 기준으로 가로의 조건에 맞는 지 검사.
+                if(i == arr[y][j]){
+                    //조건에 맞지 않음, 다음 bt로 넘어가거나, 이 전 bt로 변경해야 함.
+                }
+            }
+
+            for (int j = 0 ; j < 9; j++){ //현재 좌표 기준으로 세로의 조건에 맞는 지 검사.
+                if(i == arr[j][x]){
+                    //조건에 맞지 않음, 다음 bt로 넘어가거나, 이 전 bt로 변경해야 함.
+                }
+            }
+
+            for (int j = 0 ; j < 3; j++){ //현재 좌표 기준으로 3x3 사각형의 조건에 맞는 지 검사.
+                for(int k = 0; k < 3; k++){
+                    continue;
+                }
+            }
+
+        }
+
+
+
+
+
+
+
+
+    }
+    else{
+
+    }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+int main(){
+
+    for (int i = 0; i<9; i++){
+        for(int j = 0; j<9; j++){
+            scanf("%d", &arr[i][j]);
+        }
+    }
+
+    bt(0, 0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    for (int i = 0; i<9; i++){
+        for(int j = 0; j<9; j++){
+            printf("%d ", arr[i][j]);
+        }
+        printf("\n");
+    }
+
+
+    return 0;
+}
