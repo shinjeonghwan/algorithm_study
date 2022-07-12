@@ -1,0 +1,88 @@
+#include <iostream>
+#include <vector>
+#include <deque>
+using namespace std;
+
+int N, M;
+int a, b;
+vector<int> AL[100001];
+int Depth[100001];
+int Parent[18][100001]; //현재 정점에서 2의 K제곱번째 부모의 정점 번호 저장.
+
+int LCA(int a, int b){
+    // Step 1 : Depth 맞추기.
+    // 항상 a의 Depth가 크도록 조정. -> a와 b의 LCA나 b와 a의 LCA가 동일하기 때문
+    if (Depth[a] < Depth[b]){
+        int tmp = a;
+        a = b;
+        b = tmp;
+    }
+
+    int diff = Depth[a] - Depth[b];
+
+    for (int r = 0; diff > 0; r++){ //r은 이진수 diff의 자리수라고 생각, r은 루프카운터이자, 2의 ^ 자리수 라고 생각.
+        if(diff & 1){   //diff의 가장 아랫수가 1인 지 판별
+            a = Parent[r][a];
+        }
+        diff >>= 1;  //diff를 한 칸 내려줌.
+    }
+    // 여기까지 하면 a와 b의 Depth가 동일해짐.
+
+
+    // Step 2 : LCA 찾기
+    while(a != b){
+        int r;
+        for(r = 0; r<18; r++){
+            if(Parent[r][a] == Parent[r][b]) break;
+        }
+        if(r > 0) --r; //만난 칸의 하나 아랫칸에서 다시 시작.
+        a = Parent[r][a], b = Parent[r][b];
+
+    }
+
+
+    return a;
+}
+
+
+int main(){
+    scanf("%d", &N);
+    for(int i = 1; i < N; i++){
+        scanf("%d %d", &a, &b);
+        AL[a].push_back(b);
+        AL[b].push_back(a);
+    }
+    // BFS를 이용하여 Depth구함. root부터 시작
+    for(int i = 1; i <= N; i++) Depth[i] = -1;    //Depth가 visited 역할도 같이 수행
+    deque<int> Q;
+    Q.push_back(1);
+    Depth[1] = 0;
+    while(!Q.empty()){   //모든 노드에 대해 Depth 값 저장.
+        int cur = Q.front();
+        Q.pop_front();
+        for (int next : AL[cur]){
+            if(Depth[next] == -1){   //미방문 시 탐색
+                Q.push_back(next);
+                Depth[next] = Depth[cur] + 1;
+                Parent[0][next] = cur;
+            }
+        }
+    }
+
+    //점핑 테이블(희소 테이블 만들기)
+    for(int r = 1; r<18; r++){
+        for(int i = 1; i <= N; i++){
+            Parent[r][i] = Parent[r-1][Parent[r-1][i]]; //Parent[r][i]는 Parent[r-1][i]의 2^(r-1)번째 부모
+        }
+    }
+
+
+    scanf("%d", &M);
+    for(int i = 0; i<M; i++){
+        scanf("%d %d", &a, &b);
+        printf("%d\n", LCA(a, b));
+    }
+
+
+    return 0;
+}
