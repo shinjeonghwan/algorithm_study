@@ -1,0 +1,157 @@
+//아래 두 코드는 크루스칼 알고리즘을 이용해 풀이 한 것.
+
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <tuple>
+
+
+using namespace std;
+
+long long arr[1001];
+vector<tuple<int, int ,int>> v;
+int N, M;
+int a,b,c;
+int res = 0;
+
+
+bool cmp(const tuple<int, int, int> &v1, const tuple<int, int, int> &v2) {
+    //0번째는 오름차순, 1번째는 내림차순, 2번째는 비교대상X
+	return get<2>(v1) < get<2>(v2);
+}
+
+int find_arr(int x){
+    if(arr[x] == x) return x;
+    else return arr[x] = find_arr(arr[x]);
+}
+
+void union_arr(int a, int b){
+    a = find_arr(a);
+    b = find_arr(b);
+
+    arr[b] = a;
+}
+
+bool findParent(int a, int b) {
+	a = find_arr(a);
+	b = find_arr(b);
+	if (a == b) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+
+int main(){
+    scanf("%d", &N);
+    scanf("%d", &M);
+
+
+    for(int i = 1; i <= N; i++){
+        arr[i] = i;
+    }
+
+    for(int i = 0; i < M; i++){
+        scanf("%d %d %d", &a, &b, &c);
+        v.push_back(make_tuple(a,b,c));
+    }
+    sort(v.begin(), v.end(), cmp);
+
+
+    for(int i = 0; i < v.size(); i++){
+        if(!findParent(get<0>(v[i]), get<1>(v[i]))){  //유니온 해주고 그때의 간선 값을 전체 값에 합쳐줌.  또한 그때그때 findParent 하면서 갱신 해줌.
+            union_arr(get<0>(v[i]), get<1>(v[i]));
+            res += get<2>(v[i]);
+        }
+    }
+
+    printf("%d\n", res);
+
+
+    return 0;
+}
+
+
+
+
+============================================================================================================================================
+
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+//1<=n <=1000
+// 1<= m<= 100000
+//1<= c<=10000
+int n, m;
+int parent[1001];
+int result;
+int getParent(int num) {
+	if (num == parent[num]) return num;
+	return parent[num] = getParent(parent[num]);
+
+}
+void unionParent(int a, int b) {
+	a = getParent(a);
+	b = getParent(b);
+
+	if (a != b) {
+		parent[a]= b;
+	}
+}
+bool findParent(int a, int b) {
+	a = getParent(a);
+	b = getParent(b);
+	if (a == b) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> n >> m;
+	vector<pair<int, pair<int, int>>> edge(m);
+	for (int i = 0; i < m; i++) {
+		int cost, a, b;
+		cin >> a >> b >> cost;
+		edge[i] = { cost,{a,b} };
+	}
+	for (int i = 1; i <= n; i++) {
+		parent[i] = i;
+	}
+	sort(edge.begin(), edge.end());
+
+	for (int i = 0; i < m; i++) {
+		int cost = edge[i].first;
+		int a = edge[i].second.first;
+		int b = edge[i].second.second;
+		if (!findParent(a, b)) {
+			result += cost;
+			unionParent(a, b);
+		}
+	}
+	cout << result;
+
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
