@@ -1,13 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <deque>
+#include <cstring>
 using namespace std;
 
 int N, M;
 int a, b;
 vector<int> AL[100001];
 int Depth[100001];
-int Parent[18][100001]; //현재 정점에서 2의 K제곱번째 부모의 정점 번호 저장.
+int Parent[18][100001]; //현재 정점에서 2의 K제곱번째 부모의 정점 번호 저장, (희소 배열)
 
 int LCA(int a, int b){
     // Step 1 : Depth 맞추기.
@@ -52,6 +53,11 @@ int main(){
         AL[a].push_back(b);
         AL[b].push_back(a);
     }
+
+    // 전역변수로 정의된 배열을 모두 0이나 -1로 초기화 하는 방법, 다른 정수로는 초기화 안됨.(비트를 기준으로 동작하는 듯, 0은 모든 비트가 0, -1은 모든 비트가 1이라 동작)
+    memset(Parent, 0, sizeof Parent);   // #include <cstring>
+
+
     // BFS를 이용하여 Depth구함. root부터 시작
     for(int i = 1; i <= N; i++) Depth[i] = -1;    //Depth가 visited 역할도 같이 수행
     deque<int> Q;
