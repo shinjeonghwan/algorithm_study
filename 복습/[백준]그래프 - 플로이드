@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+#include <climits>
+
+const int INF = INT_MAX;
+
+using namespace std;
+
+int N, M;
+long long AM[101][101]; //인접 행렬
+
+
+int main(){
+    scanf("%d %d", &N, &M);
+
+    for(int i = 1; i <= N; i++){
+        for (int j = 1; j <= N; j++){
+            if(i!= j) AM[i][j] = INF;
+        }
+    }
+
+    int a, b, c;
+    for(int i = 1; i<= M; i++){
+        scanf("%d %d %d", &a,&b, &c);
+        //AM[a][b] = (c < AM[a][b]) ? c : AM[a][b];
+        if (c < AM[a][b]){
+            AM[a][b] = c;
+        }
+        else{
+            AM[a][b] = AM[a][b];
+        }
+
+    }
+
+    for(int k = 1; k <= N; k++){  // k는 경유지    경유지가 제일 바깥에 나와야 함. 중요!!, 경유지를 고정시켜 놓고 출발점 도착점을 계산해야하기 때문
+        for(int i = 1; i<=N; i++){ //i는 출발지
+            for(int j = 1; j<=N; j++){  //j는 도착지
+                //if (i==j || i==k || j==k) continue;
+
+                if(AM[i][j] > (AM[i][k] + AM[k][j])){
+                    AM[i][j] = AM[i][k] + AM[k][j];
+                }
+            }
+        }
+    }
+
+    //출력시에 INF값이 나오면 0으로 바꿔서 출력해주어야 함.
+
+    for(int i = 1; i <= N; i++){
+        for(int j = 1; j<=N; j++){
+            printf("%d ", (AM[i][j] == INF) ? 0 : AM[i][j]);
+        }
+        printf("\n");
+    }
+
+
+
+    return 0;
+}
+
