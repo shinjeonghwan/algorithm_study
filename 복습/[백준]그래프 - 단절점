@@ -1,0 +1,82 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int V, E, a, b;
+int Answer[10001], s_Ans;
+vector<int> AL[10001];
+int VisitOrder[10001]; //방문 안하면 0, 방문 순서가 저장됨.
+int CutVertex[10001];  //각 정점의 단절점 여부 저장.  단절점이면 1, 아니면 0.
+
+int order; // DFS 방문 순서
+
+
+int dfs(int cur, int parent){
+    VisitOrder[cur] = ++order;  //방문 order 저장.
+    // 내 부모에게 넘겨줄 나의 low(현재 나의 return 값) 저장하는 변수.
+    // 나와 연결된 점을 방문했을 때, 방문한 연결점이 방문했던 점들 중 order가 가장 빠른 것.
+    int minOrder = VisitOrder[cur];
+
+    // child의 갯수를 저장
+    int child = 0;
+
+    // 다음 방문 예정인 점을 탐색
+    for(int next : AL[cur]){
+        if(next == parent) continue; //직접적인 부모노드인 경우 pass
+        if(VisitOrder[next] > 0){     //next가 기 방문을 한 경우
+            //이 부분 집중!!
+            //DST의 관점에서 보면 이러한 노드들은 cur의 조상인 경우 외엔 존재할 수 없다.
+            //다시 말해, next 노드는 현재 dfs 작업이 끝난 상태가 되므로 next노드 에서의 유효한 order 값은 VisitOrder[next]가 유일하다.
+            minOrder = VisitOrder[next] < minOrder ? VisitOrder[next] : minOrder;
+        }
+        else{                         //next가 미 방문인 경우
+            child++;
+            int low = dfs(next, cur);
+
+
+            if(parent != 0 && VisitOrder[cur] <= low){
+                CutVertex[cur] = 1;
+            }
+
+            minOrder = low < minOrder ? low : minOrder;
+        }
+    }
+    if(parent == 0 && child >= 2) CutVertex[cur] = 1;
+    return minOrder;
+}
+
+
+
+
+
+
+int main(){
+    scanf("%d %d", &V, &E);
+
+    for(int i = 0; i < E; i++){
+        scanf("%d %d", &a, &b);
+        AL[a].push_back(b);
+        AL[b].push_back(a);
+    }
+
+    //주어진 그래프가 연결 그래프가 아니므로 모든 정점에 대해 DFS를 돌려놔야 함.
+    for (int i = 1; i <= V; i++){
+        if(VisitOrder[i] == 0) dfs(i, 0);
+    }
+
+    // 단절점 정보 출력.
+    for(int i = 1; i <= V; i++){
+        if(CutVertex[i]){
+            Answer[s_Ans] = i;
+            s_Ans++;
+        }
+    }
+    printf("%d\n", s_Ans);
+    for(int i = 0; i < s_Ans; i++){
+        printf("%d ", Answer[i]);
+    }
+    printf("\n");
+    return 0;
+}
+
