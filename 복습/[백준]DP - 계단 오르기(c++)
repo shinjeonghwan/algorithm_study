@@ -1,0 +1,29 @@
+#include <iostream>
+
+using namespace std;
+
+int N, M;
+int dp[301];
+int floor[301];
+
+
+int main(){
+    scanf("%d", &N);
+
+    for(int i = 1; i<=N; i++){
+            scanf("%d", &floor[i]);
+    }
+
+    dp[1] = floor[1];
+    dp[2] = floor[1] + floor[2];
+
+    for(int i = 3; i<= N; i++){
+        dp[i] = max(dp[i-3] + floor[i-1] + floor[i], dp[i-2] + floor[i]);
+    }
+
+    printf("%d\n",dp[N]);
+
+
+    return 0;
+}
+
