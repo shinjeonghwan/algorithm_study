@@ -41,3 +41,47 @@ int main(){
 
     return 0;
 }
+
+
+
+
+
+==================================================================================================================================
+
+
+
+
+#include <cstdio>
+#include <algorithm>
+int N;
+
+struct arr_t {
+    int value;
+    int index;
+    inline bool operator<(const arr_t &ref) const {
+        return this->value < ref.value;
+    }
+};
+
+arr_t A[1000001], T[1000001];
+int T_length;
+
+int main() {
+    scanf("%d", &N);
+    for (int i = 1; i <= N; i++) {
+        scanf("%d", &A[i].value);
+    }
+
+    // processing
+    for (int i = 1; i <= N; i++) {
+        // arr_t 에 호환되도록 lower_bound 함수를 사용하여 해결해보세요
+        arr_t *idx = std::lower_bound(T, T + T_length, A[i]);
+        *idx = { A[i].value, i };
+        if (idx == T) A[i].index = -1;
+        else A[i].index = idx[-1].index;
+    }
+
+    // ...(중략)...
+
+    return 0;
+}
