@@ -1,1 +1,46 @@
-복습!!
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int SIZE = (1 << 16);
+int ALLVISITED;
+
+int N;
+int W[16][16];
+int D[16][SIZE];  // [i][j] 현재 상태에서의 최소비용 (j를 방문하고 i에 도착했을 때)
+
+int main(){
+    scanf("%d", &N);
+    for(int i = 0; i<N; i++){
+        for(int j = 0; j<N; j++){
+            scanf("%d", &W[i][j]);
+            if(!W[i][j]) W[i][j] = 2000000;
+        }
+    }
+    ALLVISITED = (1 << N) - 1;
+
+    // 출발 지점과 도착 지점을 0으로 고정
+
+    // 현재 D[i][j] 상태일 경우
+    // 다음으로 진행할 경우를 가정.
+    for(int i = 0; i<N; i++){
+        for(int j = 1; j<=ALLVISITED; j++){
+            if(j & (1<<i)){
+                for(int k = 0; k<N; k++){
+                    // j의 상태가 이미 k를 방문한 상태가 아닐 때만 아래 구문을 수행한다.
+                    if(j & (1<<k)) continue;
+                    if(D[k][j | (1<<k)] == 0) D[k][j | (1<<k)] = D[i][j] + W[i][k];
+                    else D[k][j | (1 <<k)] = min(D[k][j | (1<<k)], D[i][j] + W[i][k]);
+                }
+            }
+        }
+    }
+
+
+
+    int Answer;
+
+    printf("%d\n", Answer);
+    return 0;
+}
