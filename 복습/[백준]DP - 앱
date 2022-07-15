@@ -1,1 +1,40 @@
-복습!!
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+inline int mymax(int a, int b) {return a > b ? a:b;}
+
+int N, M;
+int Arr[101];
+int Cost[101];
+int D[101][10001];  //i번째 앱까지 고려했을 때, '최소' j 만큼의 cost를 들여서 확보할 수 있는 메모리의 양
+
+int main(){
+    scanf("%d %d", &N, &M);
+
+    for(int i = 1; i<=N; i++) scanf("%d", &Arr[i]);
+    for(int i = 1; i<=N; i++) scanf("%d", &Cost[i]);
+
+
+    for(int i = 1; i<= N; i++){
+        for(int j = 0; j <Cost[i]; j++){
+            D[i][j] = D[i-1][j];
+        }
+
+        for(int j = Cost[i]; j<=10000; j++){
+            D[i][j] = mymax(D[i-1][j], D[i-1][j-Cost[i]] + Arr[i]);
+
+        }
+    }
+
+    for(int j=0; j<=10000; j++){
+        if(D[N][j] >= M){
+            printf("%d", j);
+            break;
+        }
+    }
+
+
+    return 0;
+}
