@@ -1,2 +1,54 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <cmath>
 
-복습!!
+using namespace std;
+
+const int BASE = 1048576; //2의 20제곱 : 사탕의 맛의 레벨 1~100만
+const int TSIZE = 2097152; //2의 21제곱
+
+
+int N, A, B, C;
+int iTree[TSIZE]; //사탕의 총 개수 20억 이하 (int범위)
+
+int main(){
+    scanf("%d", &N);
+
+    for (int n = 0; n < N; n++){
+        scanf("%d %d", &A, &B);
+        if(A==2) scanf("%d", &C);
+        //processing
+        if(A==1){ // 사탕상자 안에서 B번째로 맛있는 사탕을 1개 꺼내어 그 맛의 레벨을 출력
+            int index = 1;
+            while(index < TSIZE){
+                if(B > iTree[index]) B -= iTree[index++];    // B에서 인덱스드 트리의 값을 빼주고, index를 감소시킴
+                index *= 2;
+            }
+            index /= 2;
+            B = index - BASE;
+            printf("%d\n", B);  //맛의 레벨 출력
+
+            C = -1;
+            B += BASE;           //사탕을 빼는 작업을 해줘야함.
+            while(B){
+                iTree[B] += C;
+                B /= 2;
+            }
+        }
+        else{                   //사실상 이곳 else구문 없애고 사탕 업데이트 과정을 진행해도 됨. 나중에 공부할 때 이해하기 편하라고 살려둔 것.
+            B += BASE;
+            while(B){
+                iTree[B] += C;
+                B /= 2;
+            }
+        }
+    }
+
+
+
+
+
+
+    return 0;
+}
