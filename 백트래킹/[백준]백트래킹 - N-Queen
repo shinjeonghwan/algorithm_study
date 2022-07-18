@@ -1,0 +1,44 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+
+// N-Queens 문제 
+// 백트래킹에서 (x,y) 를 잡아서 처리하는 것보다. y만 잡고, x값을 그때그때 바꿔주는 식으로 계산할 줄도 알아야 함.
+
+using namespace std;
+
+int N;
+int is_Queen[15];
+int start;
+int answer;
+
+int check(int Depth) {
+	for (int i = 1; i < Depth; i++) {
+		if (is_Queen[i] == is_Queen[Depth] || (Depth - i) == abs(is_Queen[Depth] - is_Queen[i])) { // 퀸의 특성과 연관지어, 현재 위치가 불가능하면 0 반환, 가능하면 1 반환 
+			return 0;
+		}
+	}
+	return 1;
+}
+
+void N_Queens(int Depth) {
+	if (Depth == N+1) {    //0부터 시작하면 Depth == N이라고 하면 되는데,  Depth를 1부터 시작했으므로 Depth == N+1해야 옳다.
+		answer++;
+		return;
+	}
+
+	for (int i = 1; i <= N; i++) {
+		is_Queen[Depth] = i;         //Depth라는 인자 자체가 백트래킹의 끝을 찾기 위해서도 쓰이지만, y값을 의미하기도 함.
+		if(check(Depth)) N_Queens(Depth+1);
+	}
+
+}
+
+int main() {
+	scanf("%d", &N);
+
+	start = 1;
+	N_Queens(start);
+
+	printf("%d\n", answer);
+	return 0;
+}
