@@ -1,100 +1,65 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <algorithm>
 
 using namespace std;
 
 int N, num;
-long long arr[9][9];
+int arr[9][9];
+bool row[9][9];              // row[a][b]라고 하면, 가로 a번째 줄에 b라는 숫자가 이미 존재하는가 true/false
+bool col[9][9];              // col[a][b]라고 하면, 세로 a번째 줄에 b라는 숫자가 이미 존재하는가 true/false
+bool square[9][9];           // square[a][b]라고 하면, 9 * 9 사각형 1개를 3*3으로 나눈 9개라고 가정하고, 첫번째 사각형부터 0~8이라고 하면 a번째 사각형 안에 b라는 숫자가 이미 존재하는가 true/false
 
+void bt(int cnt) {
+    int x = cnt / 9;
+    int y = cnt % 9;
 
-void bt(int y, int x){
-    if (y == 0){
-        //종료조건
-    }
-
-    if (arr[y][x] == 0){           //숫자를 채워넣어야 하는 상황인 경우
-
-        for(int i = 1; i <= 9; i++){     //1~9까지의 숫자로 채워넣으면서 매번 검사, 조건에 만족하면 다음 위치에 대해서 bt() 실행, 만족하지 않으면 돌아가서 다시 다음 숫자를 가지고 bt 실행
-
-            for (int j = 0 ; j < 9; j++){ //현재 좌표 기준으로 가로의 조건에 맞는 지 검사.
-                if(i == arr[y][j]){
-                    //조건에 맞지 않음, 다음 bt로 넘어가거나, 이 전 bt로 변경해야 함.
-                }
+    if (cnt == 81) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                printf("%d ", arr[i][j]);
             }
-
-            for (int j = 0 ; j < 9; j++){ //현재 좌표 기준으로 세로의 조건에 맞는 지 검사.
-                if(i == arr[j][x]){
-                    //조건에 맞지 않음, 다음 bt로 넘어가거나, 이 전 bt로 변경해야 함.
-                }
-            }
-
-            for (int j = 0 ; j < 3; j++){ //현재 좌표 기준으로 3x3 사각형의 조건에 맞는 지 검사.
-                for(int k = 0; k < 3; k++){
-                    continue;
-                }
-            }
-
+            printf("\n");
         }
-
-
-
-
-
-
-
-
-    }
-    else{
-
+        exit(0);
     }
 
+    if (arr[x][y] == 0) {           //숫자를 채워넣어야 하는 상황인 경우
+        for (int i = 1; i <= 9; i++) {     //1~9까지의 숫자로 채워넣으면서 매번 검사, 조건에 만족하면 다음 위치에 대해서 bt() 실행, 만족하지 않으면 돌아가서 다시 다음 숫자를 가지고 bt 실행
+            if (row[x][i] == false && col[y][i] == false && square[(x / 3) * 3 + (y / 3)][i] == false) {
+                //백트래킹 기본구문
+                row[x][i] = true;
+                col[y][i] = true;
+                square[(x / 3) * 3 + (y / 3)][i] = true;
+                arr[x][y] = i;
+                bt(cnt + 1);
+                arr[x][y] = 0;
+                row[x][i] = false;
+                col[y][i] = false;
+                square[(x / 3) * 3 + (y / 3)][i] = false;
 
-
-
-
-
-
+            }
+        }
+    }
+    else {
+        bt(cnt + 1);
+    }
 }
 
 
+int main() {
 
-
-
-
-
-int main(){
-
-    for (int i = 0; i<9; i++){
-        for(int j = 0; j<9; j++){
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
             scanf("%d", &arr[i][j]);
+            if (arr[i][j] != 0) {
+                row[i][arr[i][j]] = true;
+                col[j][arr[i][j]] = true;
+                square[(i / 3) * 3 + (j / 3)][arr[i][j]] = true;
+            }
         }
     }
 
-    bt(0, 0);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    for (int i = 0; i<9; i++){
-        for(int j = 0; j<9; j++){
-            printf("%d ", arr[i][j]);
-        }
-        printf("\n");
-    }
-
+    bt(0);
 
     return 0;
 }
