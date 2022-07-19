@@ -1,1 +1,180 @@
-####복습
+140ms
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int N, K;
+vector<string> Verbs;
+bool alphabet[26];
+int ans;
+
+void bt(int Idx, int Cnt) {   //선택하는 횟수
+	if (Cnt==K) { //종료조건, Cnt == 0이라는 건, 지금까지 선택한 알파벳들을 이용해서, 지금 Verbs[][]에 있는 애들을 얼마나 처리할 수 있냐는 것을 의미
+		int tmp = 0;
+		for (int i = 0; i < N; i++) {
+			bool readable = true;
+			for (int j = 0; j < Verbs[i].length(); j++) {
+				if (!alphabet[Verbs[i][j] - 'a']) {
+					readable = false;
+					break;
+				}
+			}
+			if (readable) {
+				tmp++;
+			}
+		}
+		ans = max(ans, tmp);
+		return;
+	}
+
+	for (int i = Idx; i < 26; i++) { //알파벳 a~z까지 선택
+		if (alphabet[i] == false) {
+			alphabet[i] = true;
+			bt(i, Cnt + 1);
+			alphabet[i] = false;
+		}
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+    cin >> N >> K;
+    
+	for (int i = 0; i < N; i++) {
+		string Inp;
+		cin >> Inp;
+
+		Inp = Inp.substr(4, Inp.length());               //접두사 anta 제거
+		for (int j = 0; j < 4;j++) Inp.pop_back();       //접미사 tica 제거
+		
+		Verbs.push_back(Inp);
+	}
+
+	if (K < 5) {
+		printf("0");
+		exit(0);
+	}
+	else if (K == 26)
+	{
+		printf("%d", N);
+		return 0;
+	}
+
+	alphabet['a' - 'a'] = true;
+	alphabet['n' - 'a'] = true;
+	alphabet['t' - 'a'] = true;
+	alphabet['i' - 'a'] = true;
+	alphabet['c' - 'a'] = true;
+	K = K - 5;
+
+	bt(0, 0);
+	printf("%d\n", ans);
+
+	return 0;
+}
+
+
+
+
+
+
+=================================================================================================================================
+316ms
+
+
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int N, K;
+//char Verbs[50][15];
+vector<string> Verbs;
+char input;
+bool alphabet[26];
+int ans;
+
+int Bigger(int A, int B) { 
+	if (A > B) return A; 
+	return B;
+}
+int CanReadable() {
+	int tmp = 0;
+	bool Readable;
+	for (int i = 0; i < Verbs.size(); i++) {
+		Readable = true;
+		string str = Verbs[i];
+		for (int j = 0; j < str.length(); j++) {
+			if (alphabet[str[j] - 'a'] == false) {
+				Readable = false;
+				break;
+			}
+		}
+
+		if (Readable == true) {
+			tmp++;
+		}
+	}
+	return tmp;
+}
+
+
+void bt(int Idx, int Cnt) {   //선택하는 횟수
+	if (Cnt==K) { //종료조건, Cnt == 0이라는 건, 지금까지 선택한 알파벳들을 이용해서, 지금 Verbs[][]에 있는 애들을 얼마나 처리할 수 있냐는 것을 의미
+		ans = Bigger(ans, CanReadable());
+		return;
+	}
+
+	for (int i = Idx; i < 26; i++) { //알파벳 a~z까지 선택
+		if (alphabet[i] == true) continue;
+		alphabet[i] = true;
+		bt(i, Cnt + 1);
+		alphabet[i] = false;
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+    cin >> N >> K;
+    
+	for (int i = 0; i < N; i++) {
+		string Inp;
+		cin >> Inp;
+		Verbs.push_back(Inp);
+	}
+
+	if (K < 5) {
+		printf("0");
+		exit(0);
+	}
+	else if (K == 26)
+	{
+		printf("%d", N);
+		exit(0);
+	}
+
+	alphabet['a' - 'a'] = true;
+	alphabet['n' - 'a'] = true;
+	alphabet['t' - 'a'] = true;
+	alphabet['i' - 'a'] = true;
+	alphabet['c' - 'a'] = true;
+	K = K - 5;
+
+	bt(0, 0);
+	printf("%d\n", ans);
+
+	return 0;
+}
