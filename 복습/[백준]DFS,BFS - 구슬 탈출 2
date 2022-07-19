@@ -1,1 +1,143 @@
-복습!!!
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <queue>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+struct BALLS_INFO {
+	int R_x, R_y;
+	int B_x, B_y;
+	int Cnt;
+};
+
+int N, M;
+int board[10][10];                    //편의상 숫자로 전부 변환, 0 : 이동불가 지역, 1 : 이동가능 지역, 2 : 구멍, 3 : R, 4 : B
+bool visited[10][10][10][10];
+char board_input;
+int ans = -1;
+
+int dx[4] = {1, 0, -1, 0};
+int dy[4] = {0, 1, 0, -1};
+
+int O_x, O_y;
+
+BALLS_INFO start;
+queue<BALLS_INFO> Q;
+
+int main() {
+	scanf("%d %d ", &N, &M);
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			scanf("%c", &board_input);
+			if (board_input == '#') {
+				board[i][j] = 0;
+			}
+			else if (board_input == '.') {
+				board[i][j] = 1;
+			}
+			else if (board_input == 'O') {
+				board[i][j] = 2;
+				O_y = i;
+				O_x = j;
+			}
+			else if (board_input == 'R') {
+				board[i][j] = 3;
+				start.R_y = i;
+				start.R_x = j;
+			}
+			else if (board_input == 'B') {
+				board[i][j] = 4;
+				start.B_y = i;
+				start.B_x = j;
+			}
+		}
+		scanf("%c", &board_input);
+	}
+
+
+	//BFS 시작
+	Q.push(start);
+	visited[start.R_y][start.R_x][start.B_y][start.B_x] = true;
+	while (!Q.empty()) {
+		BALLS_INFO cur = Q.front();
+		Q.pop();
+		if (cur.Cnt > 10) {
+			ans = -1;
+			break;
+		}
+		if (board[cur.R_y][cur.R_x] == 2 && board[cur.B_y][cur.B_x] != 2) {  //B는 안빠지고, R만 빠지는 정답의 경우.
+			ans = cur.Cnt;
+			break;
+		}
+
+		for (int i = 0; i < 4; i++) {
+			int next_R_y = cur.R_y;
+			int next_R_x = cur.R_x;
+			int next_B_y = cur.B_y;
+			int next_B_x = cur.B_x;
+
+
+			while (true) {
+				if (board[next_R_y][next_R_x] != 0 && board[next_R_y][next_R_x] != 2) {
+					next_R_y += dy[i];
+					next_R_x += dx[i];
+				}
+				else {
+					if(board[next_R_y][next_R_x] == 0) {
+						next_R_y -= dy[i];
+						next_R_x -= dx[i];
+					}
+					break;         //이 때, next_R_Y, next_R_x의 값은! 벽에 가로막힌 지점이거나, 'O'에 딱 들어가진 위치임!!
+				}
+			}
+
+			while (true) {
+				if (board[next_B_y][next_B_x] != 0 && board[next_B_y][next_B_x] != 2) {
+					next_B_y += dy[i];
+					next_B_x += dx[i];
+				}
+				else {
+					if (board[next_B_y][next_B_x] == 0) {
+						next_B_y -= dy[i];
+						next_B_x -= dx[i];
+					}
+					break;
+				}
+			}
+
+			if (next_R_y == next_B_y && next_R_x == next_B_x) {  // 겹쳤다는 것은 같은 좌표라는 것. 근데 위에서 그 좌표가 '.'인 좌표거나, 'O'인 좌표일 수 있음.
+				if (board[next_R_y][next_R_x] != 2) {            // 이 구문은 겹친 좌표가 '.'일 때, 움직인 거리를 이용해서 겹친 것을 풀어주는 구문.
+					int red_dist = abs(next_R_y - cur.R_y) + abs(next_R_x - cur.R_x);
+					int blue_dist = abs(next_B_y - cur.B_y) + abs(next_B_x - cur.B_x);
+					if (red_dist > blue_dist) {
+						next_R_y -= dy[i];
+						next_R_x -= dx[i];
+					}
+					else {
+						next_B_y -= dy[i];
+						next_B_x -= dx[i];
+					}
+				}
+			}
+
+			if (visited[next_R_y][next_R_x][next_B_y][next_B_x] == false) {
+				visited[next_R_y][next_R_x][next_B_y][next_B_x] = true;
+				BALLS_INFO next;                        // 만약에 R, B공의 위치가 'O'인 경우. 여기서 push되긴 하지만
+				next.R_y = next_R_y;                    // 다시 한 번 while 돌렸을 때, visited[next_R_y][next_R_x][next_B_y][next_B_x] 상태가 true이므로 이 곳으로 안 옴.
+				next.R_x = next_R_x;                    // 결국 Q가 empty가 되어서 BFS(반복문) 종료. 이때의 ans값이 출력되므로, ans는 -1로 초기화 해두어야 함.
+				next.B_y = next_B_y;
+				next.B_x = next_B_x;
+				next.Cnt = cur.Cnt + 1;
+				Q.push(next);
+			}
+		}
+	}
+
+	printf("%d\n",ans);
+
+
+	return 0;
+}
