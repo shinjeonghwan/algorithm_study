@@ -1,0 +1,42 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+int N, M;
+bool che[1000001];
+int cnt;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> N;
+
+	che[0] = false;
+	che[1] = false;
+
+	for (int i = 2; i <= 123456*2; i++) che[i] = true;
+
+	for (int i = 2; i <= 123456*2; i++) {
+		if (che[i]) {
+			for (int j = i*2; j <= 123456*2; j += i) {
+				che[j] = false;
+			}
+		}
+	}
+
+	while (N!=0) {
+		cnt = 0;
+		M = N * 2;
+		for (int i = N+1; i <= M; i++) {
+			if (che[i]) {
+				cnt++;
+			}
+		}
+		printf("%d\n", cnt);
+		cin >> N;
+	}
+
+	return 0;
+}
