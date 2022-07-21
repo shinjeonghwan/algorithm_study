@@ -1,0 +1,84 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+long long MIN_NUM, MAX_NUM;
+bool che[1000001];
+long long cnt;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> MIN_NUM >> MAX_NUM;
+	long long cnt = 0;
+
+	for (long long i = 2; i * i <= MAX_NUM; i++) {           //사실상 MIN_NUM은 4부터 시작임. 4 이하면 i*i로 나눈 몫이 0이고 나머지가 무조건 존재해서 N = 1로 시작
+		long long N = MIN_NUM / (i * i);                       //MIN값보다 작은 정수부터 시작하기 위해 MIN을 제곱수로 나눈 몫을 N에 저장
+
+		if (MIN_NUM % (i * i)) N++;                            //만약 MIN이 30이라 하면, 4로 나눴을 때 몫은 7이고, % 구문에 의해 8이 됨.
+                                                           //즉 MIN보다 조금 더 크거나 같은 N * i * i 를 위한 N을 세팅할 수 있음.
+                                                           //만약 MIN이 32였으면 %구문ㅇ르 거쳐도 N은 8로 세팅되지만, 아래 while문에서 아무 문제가 없음.
+
+		long long chk = N * i * i;
+		while (MIN_NUM <= chk && chk <= MAX_NUM) {              
+			che[N*i*i - MIN_NUM] = 1;                             //MIN ~ MAX까지의 값을 che[]에 넣은 것이므로 [N*i*i - MIN]을 해줘야 MIN~MAX의 값이 조건에 따라 che에 들어감.
+			chk = (++N) * i * i;                                  //N 배수 숫자를 하나씩 늘려가면서 i제곱수(i*i)에 대한 N 배수는 전부 ㅇㅇ 수. 
+		}                                                       //그 과정에서 MAX_NUM보다 크면 더 안찾기.
+	}
+
+	for (int i = 0; i <= MAX_NUM - MIN_NUM; i++) {
+		if (che[i] == 0) cnt++;
+	}
+
+
+	printf("%d\n", cnt);
+
+	return 0;
+}
+
+
+================================================================================
+
+
+
+
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+long long MIN_NUM, MAX_NUM;
+bool che[1000001];
+long long cnt;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> MIN_NUM >> MAX_NUM;
+	long long cnt = 0;
+
+	for (long long i = 2; i * i <= MAX_NUM; i++) {
+		long long N = MIN_NUM / (i * i);
+
+		if (MIN_NUM % (i * i)) N++;
+
+		//long long chk = N * i * i;               // 위 코드에서 사실상 숫자가 1부터 시작하고, 제곱순느 4부터 검사하니까
+		while (N*i*i <= MAX_NUM) {                 // che[0], che[1], che[2] 은 무조건 0이므로 MIN_NUM 값에 대해 while문 조건을 없애도 됨. 
+			che[N*i*i - MIN_NUM] = 1;
+			N++;
+		}
+	}
+
+	for (int i = 0; i <= MAX_NUM - MIN_NUM; i++) {
+		if (che[i] == 0) cnt++;
+	}
+
+
+	printf("%d\n", cnt);
+
+	return 0;
+}
