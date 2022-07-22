@@ -1,0 +1,81 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+struct x_y {
+	int x;
+	int y;
+	bool visited;
+	x_y(int X, int Y, bool V) : x(X), y(Y), visited(V) {}
+};
+
+
+int t, n;
+int home_x, home_y;
+int store_x, store_y;
+int festibal_x, festibal_y;
+
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> t;
+
+	for (int i = 0; i < t; i++) {
+		cin >> n;
+		cin >> home_x >> home_y;
+		vector<x_y> store;
+		queue<x_y> Q;
+		int ans = -1;
+
+		for (int j = 0; j < n; j++) {
+			cin >> store_x >> store_y;
+			store.push_back(x_y(store_x, store_y, false));
+		}
+		cin >> festibal_x >> festibal_y;
+	
+		if (abs(festibal_x - home_x) + abs(festibal_y - home_y) <= 1000) {        // 공연장 좌표가 집 좌표랑 계산해서 1000m 이내일 때,
+			printf("happy\n");
+			ans = 1;
+			continue;
+		}
+
+		else {  // 공연장과 집이 1000m 이상 떨어져 있을 때,
+			// 현재 위치에서 1000내의 모든 편의점을 찾음. 전부 Q에 넣음
+			// Q에서 하나씩 빼면서 공연장까지 거리를 계산.
+			// Q에서 뺀 위치로부터 1000m 이내이고, 아직 Q에 안들어가 있는(이거는 visited로 해결) 편의점을 Q에 다시 넣음
+			// 무한 반복하면서 Q가 empty 될 때 까지 찾아지는 지 확인, 찾아지면 happy 종료. 아니면 sad 종료
+			for (int i = 0; i < store.size(); i++) {
+				if ((abs(store[i].x - home_x) + abs(store[i].y - home_y) <= 1000) && store[i].visited == false) {  // 공연장 좌표가 집 좌표랑 계산해서 1000m 이내일 때, 또한 방문을 안한 편의점일 때,
+					store[i].visited = true;
+					Q.push(x_y(store[i].x, store[i].y, store[i].visited));
+				}
+			}
+
+			while (!Q.empty()) {
+				x_y cur = Q.front();
+				Q.pop();
+
+				if (abs(festibal_x - cur.x) + abs(festibal_y - cur.y) <= 1000) {        // 공연장 좌표가 현재 편의점 좌표랑 계산해서 1000m 이내일 때,
+					printf("happy\n");
+					ans = 1;
+					break;
+				}
+				else {
+					for (int i = 0; i < store.size(); i++) {
+						if ((abs(store[i].x - cur.x) + abs(store[i].y - cur.y) <= 1000) && store[i].visited == false) {  // 현재 편의점 기준으로 공연장까지 계산하고, 없으면, 1000m 내의 다른 편의점 찾기
+							store[i].visited = true;
+							Q.push(x_y(store[i].x, store[i].y, store[i].visited));
+						}
+					}
+				}
+			}
+			if (ans < 0) printf("sad\n");
+		}
+	}
+	return 0;
+}
