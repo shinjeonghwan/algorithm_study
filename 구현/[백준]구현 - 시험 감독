@@ -1,0 +1,50 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+long long N;
+long long A[1000001];
+long long B, C;
+long long answer;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> N;
+	for (long long i = 1; i <= N; i++) {
+		cin >> A[i];
+	}
+	cin >> B >> C;
+
+	for (long long i = 1; i <= N; i++) {
+		long long tmp = 0;
+		long long remain = 0;
+
+		if (A[i] <= B) {
+			answer++;
+			continue;
+		}
+		else {
+			answer++;
+			tmp = A[i] - B;
+			remain = tmp % C;
+
+			if (remain == 0) {
+				tmp = tmp / C;
+				answer += tmp;
+			}
+			else {
+				tmp = tmp / C;
+				answer += tmp;
+				answer++;
+			}
+
+		}
+	}
+
+	cout << answer;
+
+	return 0;
+}
