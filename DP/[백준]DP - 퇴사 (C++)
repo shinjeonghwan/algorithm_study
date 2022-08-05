@@ -1,0 +1,41 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+struct e_t {
+	int T;
+	int P;
+	e_t(int Ti, int Pi) : T(Ti), P(Pi) {}
+};
+
+int N;
+vector<e_t> vec;
+int tmp_T, tmp_P;
+int answer[16];
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> N;
+
+	for (int i = 1; i <= N; i++) {
+		cin >> tmp_T >> tmp_P;
+		vec.push_back(e_t(tmp_T, tmp_P));
+	}
+
+	for (int i = N-1; i >= 0; i--) {
+		if (i + vec[i].T > N) {
+			answer[i] = answer[i + 1];
+		}
+		else {
+			answer[i] = max(answer[i + 1], vec[i].P + answer[i + vec[i].T]);
+		}
+	}
+
+	cout << answer[0];
+
+	return 0;
+}
