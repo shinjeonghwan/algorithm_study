@@ -1,0 +1,81 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int N;
+int num[12];
+int A[101];
+int op[4];
+
+int ans_max = -1000000001;
+int ans_min = 1000000001;
+
+
+void bt(int cur_num, int Depth) {   //cur_num은 지금까지 계산된 숫자, Depth는 지금까지 계산된 숫자의 갯수
+	if (Depth == N) {
+		if (ans_max < cur_num) {
+			ans_max = cur_num;
+		}
+
+		if (ans_min > cur_num) {
+			ans_min = cur_num;
+		}
+		return;
+	}
+
+	else {
+		int tmp_num = 0;
+
+		for (int i = 0; i < 4; i++) {
+
+			if (op[i] > 0) {
+				op[i]--;
+				if (i == 0) { // '+' 
+					tmp_num = cur_num + A[Depth + 1];
+					bt(tmp_num, Depth + 1);
+					op[i]++;
+				}
+				else if (i == 1) { // '-' 
+					tmp_num = cur_num - A[Depth + 1];
+					bt(tmp_num, Depth + 1);
+					op[i]++;
+				}
+				else if (i == 2) { // '*' 
+					tmp_num = cur_num * A[Depth + 1];
+					bt(tmp_num, Depth + 1);
+					op[i]++;
+				}
+				else if (i == 3) { // '/' 
+					tmp_num = cur_num / A[Depth + 1];
+					bt(tmp_num, Depth + 1);
+					op[i]++;
+				}
+			}
+		}
+	}
+}
+
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> N;
+
+	for (int i = 1; i <= N; i++) {
+		cin >> A[i];
+	}
+
+	for (int i = 0; i < 4; i++) {
+		cin >> op[i];
+	}
+
+	bt(A[1], 1);
+
+	cout << ans_max << '\n' << ans_min;
+
+
+	return 0;
+}
