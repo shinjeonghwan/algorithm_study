@@ -1,0 +1,260 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int N;
+int board[21][21];
+int dir[5]; // 5가지 방향 순서, 1 : 위, 2 : 아래, 3 : 왼쪽, 4 : 오른쪽
+int answer;
+
+void bt(int Depth) {    //Depth는 방향이 들어가 있는 개수
+	if (Depth == 5) {  //dir 배열에 방향이 5개가 다 채워지면, 방향이 다 결정된 것이므로, 그 방향을 가지고 계산 시작...   dir배열이 0부터 시작하므로 Depth == 4여야 5개 방향이 정해진 것.
+		int tmp_board[21][21];       //여기에서만 쓸 board를 지정... 이걸 가지고 계산하고 answer 추출.
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= N; j++) {
+				tmp_board[i][j] =  board[i][j];
+			}
+		}
+		// 연산 작업
+		for (int i = 0; i < 5; i++) {
+			if (dir[i] == 1) {       // 방향이 위쪽인 경우
+				for (int y = 1; y <= N-1; y++) {                     
+					for (int x = 1; x <= N; x++) {
+						bool blank_check = false;
+						if (tmp_board[y][x] == 0) {
+							int k = y + 1;
+							while (k <= N) {
+								if (tmp_board[k][x] != 0) {
+									blank_check = true;
+									break;
+								}
+								k++;
+							}
+							if (blank_check == true) {
+								tmp_board[y][x] = tmp_board[k][x]; 
+								tmp_board[k][x] = 0;
+							}
+						}
+					}
+				}
+
+				for (int y = 1; y <= N - 1; y++) {
+					for (int x = 1; x <= N; x++) {
+						if (tmp_board[y][x] == tmp_board[y + 1][x]) {
+							tmp_board[y][x] = tmp_board[y][x] * 2;
+							tmp_board[y + 1][x] = 0;
+						}
+					}
+				}
+
+				for (int y = 1; y <= N - 1; y++) {                     
+					for (int x = 1; x <= N; x++) {
+						bool blank_check = false;
+						if (tmp_board[y][x] == 0) {
+							int k = y + 1;
+							while (k <= N) {
+								if (tmp_board[k][x] != 0) {
+									blank_check = true;
+									break;
+								}
+								k++;
+							}
+							if (blank_check == true) {
+								tmp_board[y][x] = tmp_board[k][x];
+								tmp_board[k][x] = 0;
+							}
+						}
+					}
+				}
+			}
+
+			else if (dir[i] == 2) {  // 방향이 아래쪽인 경우
+				for (int y = N; y >= 2; y--) {
+					for (int x = 1; x <= N; x++) {
+						bool blank_check = false;
+						if (tmp_board[y][x] == 0) {
+							int k = y - 1;
+							while (k >= 1) {
+								if (tmp_board[k][x] != 0) {
+									blank_check = true;
+									break;
+								}
+								k--;
+							}
+							if (blank_check == true) {
+								tmp_board[y][x] = tmp_board[k][x];
+								tmp_board[k][x] = 0;
+							}
+						}
+					}
+				}
+
+				for (int y = N; y >= 2; y--) {
+					for (int x = 1; x <= N; x++) {
+						if (tmp_board[y][x] == tmp_board[y - 1][x]) {
+							tmp_board[y][x] = tmp_board[y][x] * 2;
+							tmp_board[y - 1][x] = 0;
+						}
+					}
+				}
+
+				for (int y = N; y >= 2; y--) {
+					for (int x = 1; x <= N; x++) {
+						bool blank_check = false;
+						if (tmp_board[y][x] == 0) {
+							int k = y - 1;
+							while (k >= 1) {
+								if (tmp_board[k][x] != 0) {
+									blank_check = true;
+									break;
+								}
+								k--;
+							}
+							if (blank_check == true) {
+								tmp_board[y][x] = tmp_board[k][x];
+								tmp_board[k][x] = 0;
+							}
+						}
+					}
+				}
+			}
+
+			else if (dir[i] == 3) {  // 방향이 왼쪽인 경우
+				for (int y = 1; y <= N; y++) {
+					for (int x = 1; x <= N - 1; x++) {
+						bool blank_check = false;
+						if (tmp_board[y][x] == 0) {
+							int k = x + 1;
+							while (k <= N) {
+								if (tmp_board[y][k] != 0) {
+									blank_check = true;
+									break;
+								}
+								k++;
+							}
+							if (blank_check == true) {
+								tmp_board[y][x] = tmp_board[y][k];
+								tmp_board[y][k] = 0;
+							}
+						}
+					}
+				}
+
+				for (int y = 1; y <= N; y++) {
+					for (int x = 1; x <= N - 1; x++) {
+						if (tmp_board[y][x] == tmp_board[y][x + 1]) {
+							tmp_board[y][x] = tmp_board[y][x] * 2;
+							tmp_board[y][x + 1] = 0;
+						}
+					}
+				}
+
+				for (int y = 1; y <= N; y++) {
+					for (int x = 1; x <= N - 1; x++) {
+						bool blank_check = false;
+						if (tmp_board[y][x] == 0) {
+							int k = x + 1;
+							while (k <= N) {
+								if (tmp_board[y][k] != 0) {
+									blank_check = true;
+									break;
+								}
+								k++;
+							}
+							if (blank_check == true) {
+								tmp_board[y][x] = tmp_board[y][k];
+								tmp_board[y][k] = 0;
+							}
+						}
+					}
+				}
+			}
+			else if (dir[i] == 4) {  // 방향이 오른쪽인 경우
+				for (int y = 1; y <= N; y++) {
+					for (int x = N; x >= 2; x--) {
+						bool blank_check = false;
+						if (tmp_board[y][x] == 0) {
+							int k = x - 1;
+							while (k >= 1) {
+								if (tmp_board[y][k] != 0) {
+									blank_check = true;
+									break;
+								}
+								k--;
+							}
+							if (blank_check == true) {
+								tmp_board[y][x] = tmp_board[y][k];
+								tmp_board[y][k] = 0;
+							}
+						}
+					}
+				}
+
+				for (int y = 1; y <= N; y++) {
+					for (int x = N; x >= 2; x--) {
+						if (tmp_board[y][x] == tmp_board[y][x - 1]) {
+							tmp_board[y][x] = tmp_board[y][x] * 2;
+							tmp_board[y][x - 1] = 0;
+						}
+					}
+				}
+
+				for (int y = 1; y <= N; y++) {
+					for (int x = N; x >= 2; x--) {
+						bool blank_check = false;
+						if (tmp_board[y][x] == 0) {
+							int k = x - 1;
+							while (k >= 1) {
+								if (tmp_board[y][k] != 0) {
+									blank_check = true;
+									break;
+								}
+								k--;
+							}
+							if (blank_check == true) {
+								tmp_board[y][x] = tmp_board[y][k];
+								tmp_board[y][k] = 0;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= N; j++) {
+				answer = max(answer, tmp_board[i][j]);
+			}
+		}
+	}
+
+	else {  // dir 배열에 방향 채우기
+		for (int i = 1; i <= 4; i++) {   // 1~4 방향으로 채우기
+			dir[Depth] = i;
+			bt(Depth + 1);
+		}
+	}
+}
+
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	cin >> N;
+
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			cin >> board[i][j];
+		}
+	}
+
+	bt(0);
+
+	cout << answer;
+
+	return 0;
+}
