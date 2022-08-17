@@ -1,0 +1,204 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int N, L;
+int board[101][101];
+int answer;
+int steps[101];
+bool runway[101];
+int previous_step;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cin >> N >> L;
+
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			cin >> board[i][j];
+		}
+	}
+
+	//가로에 대해서 계산 함.
+	for (int i = 1; i <= N; i++) {
+		bool same_chk = true;
+		bool runway_chk = true;
+		for (int j = 1; j <= N; j++) {
+			steps[j] = board[i][j];
+			runway[j] = false;
+		}
+		previous_step = steps[1];
+
+		for (int j = 2; j <= N; j++) {
+			if (steps[j] == previous_step) {
+				previous_step = steps[j];
+				continue;
+			}
+			else {
+				same_chk = false;
+
+				if (steps[j] - previous_step == 1) {        //현재 발판이 1칸 더 높다.
+					if (j - L >= 1) {  //현재 위치 대비 이전 칸이 L만큼의 여유가 있으면,
+						bool chk = false;
+						for (int k = j - L; k <= j - 1; k++) {   //그 L만큼에 대해 경사로가 이미 있는 지, 높이는 같은 지 확인하고 경사로 설치해도 되는 지 확인
+							if (runway[k] == true || steps[k] != previous_step) {
+								chk = true;
+								break;
+							}
+						}
+
+						if (chk == false) {
+							for (int k = j - L; k <= j - 1; k++) {   //L만큼에 대해 경사로 설치
+								runway[k] = true;
+							}
+						}
+						else {   //경사로 설치 불가.
+							runway_chk = false;
+							break;
+						}
+
+					}
+					else {       // 이 전 칸에 대해 충분하게 칸이 준비 되어있지 않음. + (다른 경사로가 이미 존재함. 고민해야할 문제)
+						runway_chk = false;
+						break;
+					}
+				}
+				else if (steps[j] - previous_step == -1) {  //이 전 발판이 1칸 더 높다.
+					if (j + L - 1 <= N) {                   //경사로를 설치할 최대 거리를 넘어가지 않으면
+						int tmp = steps[j];
+						bool tmp_chk = true;
+						for (int k = j; k <= j + L - 1; k++) {
+							if (tmp == steps[k]) {
+								tmp = steps[k];
+							}
+							else {
+								tmp_chk = false;
+							}
+						}
+
+						if (tmp_chk == true) {
+							for (int k = j; k <= j + L - 1; k++) {
+								runway[k] = true;
+							}
+						}
+						else {
+							runway_chk = false;
+							break;
+						}
+					}
+					else {
+						runway_chk = false;
+						break;
+					}
+				}
+				else {        //현재와 이 전 발판이 1이상 차이난다 -> 경사로 설치 불가
+					runway_chk = false;
+					break;
+				}
+			}
+			previous_step = steps[j];
+		}
+
+		if (same_chk == true || runway_chk == true) {
+			answer++;
+		}
+	}
+
+	//세로에 대해서 계산함.   
+	for (int i = 1; i <= N; i++) {
+		bool same_chk = true;
+		bool runway_chk = true;
+		for (int j = 1; j <= N; j++) {
+			steps[j] = board[j][i];
+			runway[j] = false;
+		}
+		previous_step = steps[1];
+
+		for (int j = 2; j <= N; j++) {
+			if (steps[j] == previous_step) {
+				previous_step = steps[j];
+				continue;
+			}
+			else {
+				same_chk = false;
+
+				if (steps[j] - previous_step == 1) {        //현재 발판이 1칸 더 높다.
+					if (j - L >= 1) {  //현재 위치 대비 이전 칸이 L만큼의 여유가 있으면,
+						bool chk = false;
+						for (int k = j - L; k <= j - 1; k++) {   //그 L만큼에 대해 경사로가 이미 있는 지, 높이는 같은 지 확인하고 경사로 설치해도 되는 지 확인
+							if (runway[k] == true || steps[k] != previous_step) {
+								chk = true;
+								break;
+							}
+						}
+
+						if (chk == false) {
+							for (int k = j - L; k <= j - 1; k++) {   //L만큼에 대해 경사로 설치
+								runway[k] = true;
+							}
+						}
+						else {   //경사로 설치 불가.
+							runway_chk = false;
+							break;
+						}
+
+					}
+					else {       // 이 전 칸에 대해 충분하게 칸이 준비 되어있지 않음. + (다른 경사로가 이미 존재함. 고민해야할 문제)
+						runway_chk = false;
+						break;
+					}
+				}
+				else if (steps[j] - previous_step == -1) {  //이 전 발판이 1칸 더 높다.
+					if (j + L - 1 <= N) {                   //경사로를 설치할 최대 거리를 넘어가지 않으면
+						int tmp = steps[j];
+						bool tmp_chk = true;
+						for (int k = j; k <= j + L - 1; k++) {
+							if (tmp == steps[k]) {
+								tmp = steps[k];
+							}
+							else {
+								tmp_chk = false;
+							}
+						}
+
+						if (tmp_chk == true) {
+							for (int k = j; k <= j + L - 1; k++) {
+								runway[k] = true;
+							}
+						}
+						else {
+							runway_chk = false;
+							break;
+						}
+					}
+					else {
+						runway_chk = false;
+						break;
+					}
+				}
+				else {        //현재와 이 전 발판이 1이상 차이난다 -> 경사로 설치 불가
+					runway_chk = false;
+					break;
+				}
+			}
+			previous_step = steps[j];
+		}
+
+		if (same_chk == true || runway_chk == true) {
+			answer++;
+		}
+	}
+
+
+	cout << answer;
+
+
+
+
+
+	return 0;
+}
