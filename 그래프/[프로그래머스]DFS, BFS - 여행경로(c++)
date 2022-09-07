@@ -1,0 +1,32 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+bool DFS(string Cur, vector<vector<string>> Tickets, vector<string> &answer, vector<bool> &Used, int Depth){
+    answer.push_back(Cur);
+    if(Depth == Tickets.size()) return true;
+    
+    for(int i = 0; i < Tickets.size(); i++){
+        if(Tickets[i][0] == Cur && Used[i] == false){
+            Used[i] = true;
+            bool T = DFS(Tickets[i][1], Tickets, answer, Used, Depth + 1);
+            if(T == true) return true;
+            Used[i] = false;
+        }
+    }
+    answer.pop_back();
+    return false;
+}
+
+vector<string> solution(vector<vector<string>> tickets) {
+    vector<string> answer;
+    vector<bool> Used(tickets.size(), false);
+    int tickects_size = tickets.size();
+    
+    sort(tickets.begin(), tickets.end());
+    DFS("ICN", tickets, answer, Used, 0);
+    
+    return answer;
+}
