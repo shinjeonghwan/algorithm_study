@@ -1,23 +1,22 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <algorithm>
-#include <vector>
 
 using namespace std;
 
 int DP[30][30];
 
 int solution(int M, int N) {
-	if (DP[M][N] != 0) {
+	if (DP[M][N] != 0) {      //중복계산을 없애줌.
 		return DP[M][N];
 	}
 
-	if (N == 0 || M == N) {
+	if (N == 0 || M == N) {   // 파스칼의 삼각형의 가장자리 부분에 대한 처리를 해줌. 가장자리는 1이기때문.
 		DP[M][N] = 1;
 		return DP[M][N];
 	}
 	else {
-		DP[M][N] = solution(M - 1, N - 1) + solution(M - 1, N);
+		DP[M][N] = solution(M - 1, N - 1) + solution(M - 1, N);   // 파스칼의 삼각형 성질에 따라 재귀적으로 계산함.
 		return DP[M][N];
 	}
 }
