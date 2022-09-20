@@ -1,0 +1,38 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <queue>
+
+using namespace std;
+
+bool cmp(int a, int b){
+    return a > b;
+}
+
+
+long long solution(int n, vector<int> works) {
+    long long answer = 0;
+    
+    priority_queue <int> PQ(works.begin(), works.end());    // works자체를 PQ에 넣은 형태.
+    // PQ는 기본적으로 <자료형, 구현체, 비교연산자> 형태로 선언해야 한다.
+    // 예시 <int, vector<int>, cmp> 
+    // 일반적으로 priority_queue<int> 형태로 선언하는거는 나머지 부분이 생략된 형태
+    // 기본적으로 PQ는 MaxHeap이므로 최대값이 top에 위치한다.
+    // MinHeap으로 처리하고 싶으면, 넣어주는 숫자값을 -로 처리하던가. cmp나, 구조체를 사용해서 처리해야한다.
+    
+    for(int i = 0; i < n; i++){
+        if(PQ.top() > 0){
+            int tmp = PQ.top();
+            PQ.pop();
+            tmp -= 1;
+            PQ.push(tmp);
+        }
+    }
+
+    while(!PQ.empty()){
+        answer += (long long) PQ.top() * (long long) PQ.top();
+        PQ.pop();
+    }
+    
+    return answer;
+}
