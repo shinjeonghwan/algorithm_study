@@ -1,0 +1,49 @@
+#include <string>
+#include <vector>
+#include <queue>
+#include <algorithm>
+#include <iostream>
+
+
+using namespace std;
+
+struct cmp{
+    bool operator()(vector<int> a, vector<int> b){
+        return a[1] > b[1];    //구조체에서 bool operator()에 의한 오름차순 정렬
+    }
+};
+
+bool cmp_j(const vector<int> & A, const vector<int> & B){
+    return A[0] < B[0];   // sort()에서 jobs의 0번째 인자에 대해 오름차순 정렬.
+}
+
+int solution(vector<vector<int>> jobs) {
+    int answer = 0;
+    int curr_time = 0;  //현재 시간이 위치하고 있는 커서
+    int task_idx = 0;   //처리할 작업을 순서대로 계산하기 위해 필요한 인덱스
+    
+    //PQ는 현재 진행중인 job의 종료시간 안에 들어온 새로운 job들의 모임.
+    //그 중에서 실행시간이 가장 작은 애를 선택해서 뽑는 것.
+    priority_queue<vector<int>, vector<vector<int>>, cmp> PQ;
+    sort(jobs.begin(), jobs.end(), cmp_j);
+        
+    while(task_idx < jobs.size() || !PQ.empty()){
+        
+        if(task_idx < jobs.size() && jobs[task_idx][0] <= curr_time){
+            PQ.push(jobs[task_idx++]);
+            continue;
+        }
+        
+        if(!PQ.empty()){   //PQ에 값이 있다면, 기존에 수행중인 job의 종료 전에 들어온 새로운 job이라는 것
+            curr_time += PQ.top()[1];  //실행시간
+            answer += curr_time - PQ.top()[0];
+            PQ.pop();
+        }
+        else{   //PQ에 값이 없다면, 현재 진행중인 job의 종료 후에(언제가 될 지 모름) 새로운 job을 찾아야 함.
+            curr_time = jobs[task_idx][0];   //그때 들어온 값이 현재 시간.
+        }
+    }
+    answer = answer / jobs.size();
+    
+    return answer;
+}
