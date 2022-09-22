@@ -1,0 +1,50 @@
+#include <string>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+struct e_t {
+    int number;
+    int value;
+    e_t(int N, int V) : number(N), value(V) {}
+};
+
+bool cmp(const pair<string, int> & a, const pair<string, int>& b) {
+    return a.second > b.second;
+}
+bool cmp2(const e_t& a, const e_t& b) {
+    return a.value > b.value;
+}
+
+
+vector<int> solution(vector<string> genres, vector<int> plays) {
+    vector<int> answer;
+    map<string, vector<e_t>> albums;
+    map<string, int> best_albums;
+
+    for (int i = 0; i < genres.size(); i++) {
+        albums[genres[i]].push_back(e_t(i, plays[i]));
+        best_albums[genres[i]] += plays[i];
+    }
+
+    vector<pair<string, int>> albums_list (best_albums.begin(), best_albums.end());  // map의 value를 기준으로 sort가 어렵기때문에 vector로 바꿔서 sort
+    sort(albums_list.begin(), albums_list.end(), cmp);
+    
+    for (int i = 0; i < albums_list.size(); i++) {   //이 순서대로 큰 숫자의 장르이고, 이 장르중에서 answer에 두개씩 뽑아서 넣어주면 됨.        
+        sort(albums[albums_list[i].first].begin(), albums[albums_list[i].first].end(), cmp2);
+
+        if (albums[albums_list[i].first].size() == 1) {    // 문제의 조건에 따라, 음악이 1개이면 answer에 1개만 넣어주면 되므로...
+            answer.push_back(albums[albums_list[i].first][0].number);
+        }
+        else {  // 2개 이상이면, 재생횟수의 최상단 2개만 넣어줌.
+            answer.push_back(albums[albums_list[i].first][0].number);
+            answer.push_back(albums[albums_list[i].first][1].number);
+        }
+
+    }
+
+    return answer;
+}
