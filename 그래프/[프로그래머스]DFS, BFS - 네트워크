@@ -66,10 +66,52 @@ int solution(int n, vector<vector<int>> computers) {
             }
         }
     }
-    
-    
-    
-    
-    
     return answer;
 }
+
+
+
+=========================================================================
+#include <string>
+#include <vector>
+
+using namespace std;
+
+bool visited[201];
+vector<int> graph[201];
+
+void DFS(int node){
+    if(visited[node] == true) return;
+    
+    else{
+        visited[node] = true;
+        for(int i = 0; i < graph[node].size(); i++){
+            DFS(graph[node][i]);
+        }
+    }
+}
+
+
+int solution(int n, vector<vector<int>> computers) {
+    int answer = 0;
+    
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < n; j++){
+            if(i == j) continue;
+            if(computers[i][j] == 1) graph[i].push_back(j);
+        }
+    }
+    
+    for(int i = 0; i < n; i++){
+        if(visited[i] == false){
+            DFS(i);
+            answer+=1;
+        }
+    }
+    return answer;
+}
+
+
+
+
+
