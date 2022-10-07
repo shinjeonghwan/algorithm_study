@@ -1,0 +1,129 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+struct e_t {
+	int row;
+	int col;
+	e_t(int R, int C) : row(R), col(C) {}
+};
+
+int board[101][101];
+int N;
+int K;
+int apple_row, apple_col;
+int L;
+int X;
+char C;
+
+deque<e_t> snake;
+int dx[4] = {0, 1, 0, -1};   // row        오른쪽, 아래쪽, 왼쪽, 위쪽
+int dy[4] = {1, 0, -1, 0};   // col           0  ,  1  ,   2,  ,  3
+int direction = 0;           // 처음에는 오른쪽을 보고 있음.
+
+int apple_number;
+int answer;
+bool game_over;
+int prev_time;
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	board[1][1] = 1;   // 뱀의 초기 시작 위치
+	snake.push_back(e_t(1, 1));
+
+	cin >> N;
+	cin >> K;
+	for (int i = 0; i < K; i++) {
+		cin >> apple_row >> apple_col;
+		board[apple_row][apple_col] = 2;  // 2가 사과라는 뜻,  1은 뱀의 몸통이라고 하자.  0은 빈 공간
+	}
+
+	cin >> L;
+	for (int i = 0; i < L; i++) {
+		cin >> X >> C;
+		if (game_over == true) continue;
+
+		for (int x = 1; x <= X - prev_time; x++) {    // X초 만큼 direction방향으로 이동
+			answer++;   // 초 세기
+			
+			e_t head = snake.front();
+			int nx = head.row + dx[direction];
+			int ny = head.col + dy[direction];
+
+			if (nx >= 1 && nx <= N && ny >= 1 && ny <= N) {  // 뱀 대가리가 이동할 다음 위치가 벽을 넘지 않는 경우 -> 케이스가 3개로 나뉨.
+				if (board[nx][ny] == 0) {       // 빈 공간인 경우
+					
+					snake.push_front(e_t(nx, ny));
+					board[nx][ny] = 1;
+					
+					e_t tail = snake.back();      // 꼬리 부분 이동시키기
+					snake.pop_back();
+					board[tail.row][tail.col] = 0;  // 꼬리 부분이었던 곳 0으로 처리해주기
+				}
+				else if(board[nx][ny] == 2) {   // 사과인 경우					
+					snake.push_front(e_t(nx, ny));
+					board[nx][ny] = 1;
+				}
+				else {  // 몸통의 일부 인 경우					
+					game_over = true;
+					break;
+				}
+			}
+			else { // 벽에 부딪혀버린 경우
+				game_over = true;
+				break;
+			}
+		}
+		prev_time = X;
+
+		if (C == 'L') {  // 현재 direction을 왼쪽으로 돌리기
+			direction -= 1;
+			if (direction == -1) direction = 3;
+		}
+		else if (C == 'D') {  // 현재 direction을 오른쪽으로 돌리기
+			direction += 1;
+			if (direction == 4) direction = 0;
+		}
+	}
+	if (game_over == false) {
+		while (game_over == false) {
+			answer++;   // 초 세기
+
+			e_t head = snake.front();
+			int nx = head.row + dx[direction];
+			int ny = head.col + dy[direction];
+
+			if (nx >= 1 && nx <= N && ny >= 1 && ny <= N) {  // 뱀 대가리가 이동할 다음 위치가 벽을 넘지 않는 경우 -> 케이스가 3개로 나뉨.
+				if (board[nx][ny] == 0) {       // 빈 공간인 경우
+					snake.push_front(e_t(nx, ny));
+					board[nx][ny] = 1;
+
+					e_t tail = snake.back();      // 꼬리 부분 이동시키기
+					snake.pop_back();
+					board[tail.row][tail.col] = 0;  // 꼬리 부분이었던 곳 0으로 처리해주기
+				}
+				else if (board[nx][ny] == 2) {   // 사과인 경우
+					snake.push_front(e_t(nx, ny));
+					board[nx][ny] = 1;
+				}
+				else {  // 몸통의 일부 인 경우
+					game_over = true;
+					break;
+				}
+			}
+			else { // 벽에 부딪혀버린 경우
+				game_over = true;
+				break;
+			}
+		}
+	}
+
+	cout << answer;
+	return 0;
+}
