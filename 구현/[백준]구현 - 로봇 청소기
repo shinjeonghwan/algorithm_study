@@ -1,44 +1,78 @@
-import sys
-from collections import Counter
-from itertools import combinations
-sys.setrecursionlimit(1000000000)
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+#include <queue>
 
-def solution(N, M, x,y,d, graph):
-    dx = [-1, 0, 1, 0]
-    dy = [0, 1, 0, -1]
+using namespace std;
 
-    cnt = 1
-    graph[x][y] = 3
+int board[50][50];
 
-    while True:
-        chk = False
-        for i in range(4):
-            d = (d-1) % 4
-            nx = x + dx[d]
-            ny = y + dy[d]
-            if 0 <= nx < N and 0 <= ny < M:
-                if graph[nx][ny] == 0:
-                    cnt +=1
-                    graph[nx][ny] = 3
-                    x, y = nx, ny
-                    chk = True
-                    break
-        if not chk:
-            nx = x - dx[d]
-            ny = y - dy[d]
-            if 0 <= nx < N and 0 <= ny < M:
-                if graph[nx][ny] == 3:
-                    x, y = nx, ny
-                elif graph[nx][ny] == 1:
-                    print(cnt)
-                    break
-            else:
-                print(cnt)
-                break
+int dx[4] = {-1, 0, 1, 0};   // row        북쪽, 동쪽, 남쪽, 서쪽
+int dy[4] = {0, 1, 0, -1};   // col           0  ,  1  ,   2,  ,  3
 
-if __name__ == '__main__':
-    N, M = map(int, input().split())
-    x, y, d = map(int, input().split())
-    graph = [list(map(int, input().split())) for _ in range(N)]
+int N, M;
+int robot_r, robot_c, robot_direction;
 
-    solution(N, M, x,y,d, graph)
+int turning_cnt;
+bool finish_robot;
+int answer;                // 청소하면 2로 변경해주고, 그때 answer++; 수행
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	
+	cin >> N >> M;
+	cin >> robot_r >> robot_c >> robot_direction;
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			cin >> board[i][j];
+		}
+	}
+
+	while (finish_robot == false) {
+		if (board[robot_r][robot_c] == 0) {   // 현재 위치가 청소하지 않은 빈칸이라면 청소하고 answer를 하나 증가시킨다.
+			board[robot_r][robot_c] = 2;
+			answer++;
+		}
+		int tmp_direction = robot_direction;
+		turning_cnt = 0;
+
+		for (int i = 0; i < 4; i++) {  // 최대 4번 왼쪽으로 회전하면서 다음 청소할 위치를 찾는다. 4번 회전했는데도 못찾으면 2-3, 2-4 조건에 따라 진행한다. 
+			tmp_direction--;
+			if (tmp_direction == -1) tmp_direction = 3;
+			
+			int nx = robot_r + dx[tmp_direction];
+			int ny = robot_c + dy[tmp_direction];
+
+			if (board[nx][ny] == 0) {  // 청소할 수 있는 공간이라면,  2-1 실행
+				robot_direction = tmp_direction;
+				robot_r = nx;
+				robot_c = ny;
+				break;
+			}
+			else if (board[nx][ny] == 2 || board[nx][ny] == 1) {   // 이미 청소가 되어있거나 벽이라면, 2-2 실행
+				robot_direction = tmp_direction;
+				turning_cnt++;
+			}
+		}
+
+		if (turning_cnt == 4) {  // 4방향을 다 돌아봤는데, 청소할 곳이 없었다면!
+			int back_x = robot_r - dx[robot_direction];
+			int back_y = robot_c - dy[robot_direction];
+			
+			if (board[back_x][back_y] == 2) {   // 2-3을 수행할 수 있는 지.
+				robot_r = back_x;
+				robot_c = back_y;
+			}
+
+			else if (board[back_x][back_y] == 1) {       // 2-4를 수행할 수 있는 지.
+				finish_robot = true;
+			}
+		}
+	}
+	cout << answer;
+
+	return 0;
+}
