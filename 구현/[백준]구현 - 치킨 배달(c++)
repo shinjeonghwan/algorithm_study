@@ -1,0 +1,68 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct e_t {
+	int row;
+	int col;
+	e_t(int R, int C) : row(R), col(C) {}
+};
+
+int board[51][51];
+int N, M;
+
+vector<e_t> house;     // 집의 좌표
+vector<e_t> chicken;   // 치킨집의 좌표
+
+vector<e_t> selected_chicken;   // 살릴 치킨집의 좌표
+
+int answer = 99999999;
+
+void bt(int idx, int Depth) {
+	if (Depth == M) {
+		// 비교작업 수행
+		int sum = 0;
+		int tmp = 99999999;
+		for (int i = 0; i < house.size(); i++) {
+			for (int j = 0; j < selected_chicken.size(); j++) {
+				tmp = min(tmp, abs(house[i].row - selected_chicken[j].row) + abs(house[i].col - selected_chicken[j].col));
+			}
+			sum += tmp;
+			tmp = 99999999;
+		}
+		answer = min(answer, sum);
+
+		return;
+	}
+
+	for (int i = idx; i < chicken.size(); i++) {
+		selected_chicken.push_back(chicken[i]);
+		bt(i+1, Depth + 1);
+		selected_chicken.pop_back();
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	
+	cin >> N >> M;
+
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			cin >> board[i][j];
+			if (board[i][j] == 1) house.push_back(e_t(i, j));
+			else if (board[i][j] == 2) chicken.push_back(e_t(i, j));
+
+		}
+	}
+
+	bt(0, 0);
+
+	cout << answer;
+
+	return 0;
+}
