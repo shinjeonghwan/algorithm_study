@@ -1,49 +1,59 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <algorithm>
 #include <vector>
 
 using namespace std;
 
+int board[21][21];
 int N;
-int Team_Max_num;
-int S[21][21];
-int start_sum;
-int link_sum;
-int answer = 1000001;
-bool Team[21]; // true는 start팀, false는 link팀
+int team_member_cnt;
+int answer = 101;
 
-void bt(int Cur, int Cnt) {   //Cnt는 현재까지 선택된 사람 수.
-	if (Cnt == Team_Max_num) {
-		start_sum = 0;
-		link_sum = 0;
-		for (int i = 1; i <= N; i++) {
-			for (int j = 1; j <= N; j++) {
-				if (i == j) continue;
+vector<int> team_A;
+vector<int> team_B;
 
-				if (Team[i] == true && Team[j] == true) { // 둘 다 start 팀일 때,
-					start_sum += S[i][j];
-				}
-				else if (Team[i] == false && Team[j] == false) {//둘 다 link 팀일 때,
-					link_sum += S[i][j];
-				}
+bool team_A_chk[21];
+
+void backtracking(int idx, int Depth) {
+	if (Depth == team_member_cnt) {
+		//숫자계산해주고 정산. 최소값 처리.
+		int A_sum = 0;
+		int B_sum = 0;
+
+		for(int i = 1; i <= N; i++){
+			if (team_A_chk[i] == false) {
+				team_B.push_back(i);
 			}
 		}
-		answer = min(answer, abs(start_sum - link_sum));
+
+		for (int i = 0; i < team_member_cnt; i++) {
+			for (int j = 0; j < team_member_cnt; j++) {
+				if (i == j) continue;
+				A_sum += board[team_A[i]][team_A[j]];
+			}
+		}
+
+		for (int i = 0; i < team_member_cnt; i++) {
+			for (int j = 0; j < team_member_cnt; j++) {
+				if (i == j) continue;
+				B_sum += board[team_B[i]][team_B[j]];
+			}
+		}
+
+		answer = min(answer, abs(A_sum - B_sum));
+		team_B.clear();
+
 		return;
 	}
 
-	else {
-		for (int i = Cur; i <= N; i++) {
-			if (Team[i] == false) {
-				Team[i] = true;
-				bt(i+1, Cnt + 1);
-				Team[i] = false;
-			}
-		}
-
+	for (int i = idx+1; i <= N; i++) {
+		team_A.push_back(i);
+		team_A_chk[i] = true;
+		backtracking(i, Depth + 1);
+		team_A.pop_back();
+		team_A_chk[i] = false;
 	}
-
+	return;
 }
 
 
@@ -51,16 +61,18 @@ void bt(int Cur, int Cnt) {   //Cnt는 현재까지 선택된 사람 수.
 int main() {
 	ios::sync_with_stdio(0);
 	cin.tie(0);
+	cout.tie(0);
+	
 	cin >> N;
-	Team_Max_num = N / 2;
+	team_member_cnt = N / 2;
 
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= N; j++) {
-			cin >> S[i][j];
+			cin >> board[i][j];
 		}
 	}
 
-	bt(1, 0);
+	backtracking(0, 0);
 
 	cout << answer;
 
