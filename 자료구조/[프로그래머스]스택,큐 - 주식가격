@@ -1,17 +1,44 @@
-def solution(prices):
-    answer = [len(prices) -i -1 for i in range(len(prices))]
-    stack = [0]
-    
-    for i in range(1, len(prices)):
-        while stack:
-            idx = stack[-1]
-            
-            if prices[idx] > prices[i]:
-                answer[idx] = i - idx
-                stack.pop()
-            else:
-                break
-        stack.append(i)
-    
-    return answer
+#include <iostream>
+#include <string>
+#include <vector>
 
+using namespace std;
+
+vector<int> solution(vector<int> prices) {
+    vector<int> answer;
+    vector<int> stack;
+    int prices_len;
+    
+    prices_len = prices.size();
+    stack.push_back(prices_len-1);
+    stack.push_back(prices_len-2);
+    
+    for(int i = 0 ; i != prices_len; i++){
+        answer.push_back(0);
+    }
+    answer[prices_len-2] = 1;
+    
+    
+    for(int i = prices_len-3; i > -1; i--){
+        while(!stack.empty()){
+            int idx = stack.back();            
+            
+            if(prices[idx] < prices[i]){
+                answer[i] = idx - i;
+                stack.push_back(i);
+                break;
+            }
+            else{
+                stack.pop_back();
+            }
+            
+            if(stack.empty()){
+                stack.push_back(i);
+                answer[i] = prices_len - 1 - i;
+                break;
+            }
+        }
+    }
+    
+    return answer;
+}
