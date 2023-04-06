@@ -1,0 +1,179 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+
+using namespace std;
+
+int board[51][51];
+int tmp_board[51][51];
+
+int dx[4] = { 1, 0, -1, 0 };
+int dy[4] = { 0, 1, 0, -1 };
+
+
+int R, C, T;
+int upper_Aircleaner, under_Aircleaner;
+bool Aircleaner_chk = false;
+int cur_x, cur_y, tmp_x, tmp_y;
+int answer;
+
+// 1. 미세먼지 분산 처리
+// 각 미세먼지 위치 당, 4방향 분산이 일어나고 나서 마지막에 그 좌표에 모든 값을 더해줘서 결과 보여주는 형태.
+// 기존 보드와 누적값 보드를 따로 둬서, 기존 보드에서 분산일어날 때, 그 방향과 A(r,c)에 값을 누적쪽에 + 해주는 형태로 관리
+// 기존 보드가 마지막까지 수행됐으면, 누적 보드를 기존 보드로 대체,
+
+// 2. 공기 청정기 처리
+// 제일 마지막 구역부터 하나씩 땡겨오기 & 0, R, C, 등 한계선 만나면, upper/under 나눠서 방향 처리
+
+
+
+
+// T번 수행 후, 전수조사로 '-1' 제외하고 전부 합 수행.
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> R >> C >> T;
+
+	for (int i = 1; i <= R; i++) {
+		for (int j = 1; j <= C; j++) {
+			cin >> board[i][j];
+			if (board[i][j] == -1 && Aircleaner_chk == false) {
+				Aircleaner_chk = true;
+				upper_Aircleaner = i;
+				under_Aircleaner = i + 1;
+			}
+		}
+	}
+
+	for (int t = 0; t < T; t++) {  // T 초만큼 수행
+		// 먼지 분산 페이즈
+		for (int i = 1; i <= R; i++) {
+			for (int j = 1; j <= C; j++) {
+				if (board[i][j] > 0) {  // 먼지가 쌓여있다면,
+					int A_rc = board[i][j];
+					int side_A_rc = A_rc / 5;
+
+					//확산 방향 체크
+					int dir_cnt = 0;
+					for (int k = 0; k < 4; k++) {
+						int ni = i + dx[k];  //행
+						int nj = j + dy[k];  //열
+
+						if (ni >= 1 && ni <= R && nj >= 1 && nj <= C && board[ni][nj] != -1) {
+							dir_cnt++;
+							tmp_board[ni][nj] += side_A_rc;
+						}
+					}
+
+					A_rc = A_rc - side_A_rc * dir_cnt++;
+					tmp_board[i][j] += A_rc;
+				}
+			}
+		}
+		
+		for (int i = 1; i <= R; i++) {
+			for (int j = 1; j <= C; j++) {
+				board[i][j] = tmp_board[i][j];
+				tmp_board[i][j] = 0;
+			}
+		}
+
+		board[upper_Aircleaner][1] = -1;
+		board[under_Aircleaner][1] = -1;
+
+		// 공기 청정기 이동 페이즈(상부)
+		cur_y = upper_Aircleaner - 1;
+		cur_x = 1;
+		// 위, 오른쪽, 아래, 왼쪽 순으로 커서가 이동.
+		int dir_x[4] = {0, 1, 0, -1};       
+		int dir_y[4] = {-1, 0, 1, 0};
+		int cur_dir = 0;
+		while (cur_y != upper_Aircleaner || cur_x != 1) {
+			//현재 위치에 먼지가 쌓여있는 경우
+			if (board[cur_y][cur_x] > 0) {
+				int tmp_dir = (cur_dir + 2) % 4;
+				int nx = cur_x + dir_x[tmp_dir];
+				int ny = cur_y + dir_y[tmp_dir];
+
+				if (board[ny][nx] == -1) {
+					board[cur_y][cur_x] = 0;
+				}
+				else {
+					board[ny][nx] = board[cur_y][cur_x];
+					board[cur_y][cur_x] = 0;
+				}
+			}
+
+			//다음 좌표로 진행
+			int nx = cur_x + dir_x[cur_dir];
+			int ny = cur_y + dir_y[cur_dir];
+
+			if (ny < 1 || ny > upper_Aircleaner || nx > C) {
+				cur_dir = (cur_dir + 1) % 4;
+				cur_x = cur_x + dir_x[cur_dir];
+				cur_y = cur_y + dir_y[cur_dir];
+			}
+			else {
+				cur_x = nx;
+				cur_y = ny;
+			}
+		}
+
+
+		// 공기 청정기 이동 페이즈(하부)
+		cur_y = under_Aircleaner + 1;
+		cur_x = 1;
+		// 아래, 오른쪽, 위, 왼쪽 순으로 커서가 이동.
+		int sdir_x[4] = { 0, 1, 0, -1 };
+		int sdir_y[4] = { 1, 0, -1, 0 };
+		int scur_dir = 0;
+		while (cur_y != under_Aircleaner || cur_x != 1) {
+			//현재 위치에 먼지가 쌓여있는 경우
+			if (board[cur_y][cur_x] > 0) {
+				int tmp_dir = (scur_dir + 2) % 4;
+				int nx = cur_x + sdir_x[tmp_dir];
+				int ny = cur_y + sdir_y[tmp_dir];
+
+				if (board[ny][nx] == -1) {
+					board[cur_y][cur_x] = 0;
+				}
+				else {
+					board[ny][nx] = board[cur_y][cur_x];
+					board[cur_y][cur_x] = 0;
+				}
+			}
+
+			//다음 좌표로 진행
+			int nx = cur_x + sdir_x[scur_dir];
+			int ny = cur_y + sdir_y[scur_dir];
+
+			if (ny < under_Aircleaner || ny > R || nx > C) {
+				scur_dir = (scur_dir + 1) % 4;
+				cur_x = cur_x + sdir_x[scur_dir];
+				cur_y = cur_y + sdir_y[scur_dir];
+			}
+			else {
+				cur_x = nx;
+				cur_y = ny;
+			}
+		}
+
+
+	}
+	
+
+	for (int i = 1; i <= R; i++) {
+		for (int j = 1; j <= C; j++) {
+			if (board[i][j] == -1) {
+				continue;
+			}
+			answer += board[i][j];
+		}
+	}
+
+	cout << answer;
+
+	return 0;
+}
