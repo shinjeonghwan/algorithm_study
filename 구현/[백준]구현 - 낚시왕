@@ -1,0 +1,158 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
+#include <deque>
+
+
+// 낚시왕 아이디어
+// 주어진 조건대로 차분하게 계산하면 될 거 같은데, 상어 데이터는 구조체 이용, 만약 자리에 상어가 없다면, 구조체 값들을 0, 0, 0 처리.
+// 상어가 여러마리 겹치는 경우가 생긴다면, 우선 처음에 계산한 상어가 자리 차지하고 있다가, 새로운 상어랑 값 비교를 통해서 그 좌표에 상어 데이터 덮어쓰기 수행.
+// 좌표가 움직이면서 중복된 수 있기 때문에, 움직이는 동안의 좌표를 계산하는 tmp_board[][]와 실제 결과물을 전시하는 board[][] 두 개로 나눠서 진행.
+
+using namespace std;
+
+struct Shark {
+	int r;
+	int c;
+	int s, d, z;
+	Shark() { r = 0; c = 0; s = 0; d = 0; z = 0; }
+	Shark(int R, int C, int S, int D, int Z) : r(R), c(C), s(S), d(D), z(Z) {}
+};
+
+Shark board[101][101];
+Shark tmp_board[101][101];
+
+int R, C, M;
+int s_r, s_c, s_s, s_d, s_z;
+int fishman_pos = 0;
+int amount_shark = 0;
+
+int dx[4] = { 0, 1, 0, -1 };   //아래, 오른쪽, 위, 왼쪽 이동
+int dy[4] = { 1, 0, -1, 0 }; 
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	
+	cin >> R >> C >> M;
+
+	// 수조에 상어 세팅
+	for (int i = 0; i <= 100; i++) {
+		for (int j = 0; j <= 100; j++) {
+			board[i][j] = Shark();
+			tmp_board[i][j] = Shark();
+		}
+	}
+
+	if (M == 0) {
+		cout << 0;
+		return 0;
+	}
+
+	for (int i = 1; i <= M; i++) {
+		cin >> s_r >> s_c >> s_s >> s_d >> s_z;
+		board[s_r][s_c] = Shark(s_r, s_c, s_s, s_d, s_z);
+	}
+
+	// 낚시왕 이동.
+	while (++fishman_pos <= C) {          // 최대 이동 거리보다 낮으면 시작, 1부터 출발
+
+		//수조 체크(낚시왕이 있는 아래쪽 수조만 체크)
+		for (int i = 1; i <= R; i++) {
+			if (board[i][fishman_pos].z != 0) {            // 상어가 존재하면
+				amount_shark += board[i][fishman_pos].z;   // 잡은 상어의 크기 누적 계산
+				board[i][fishman_pos] = Shark();           // 그 위치의 상어값 제거
+				break;                                     // 낚시 끝
+			}
+		}
+
+
+		// 상어 움직임 처리
+		for (int i = 1; i <= R; i++) {
+			for (int j = 1; j <= C; j++) {
+				if (board[i][j].z == 0) continue; // 상어가 없으면 패스
+
+				// 상어가 있으면 그 상어의 이동을 수행.
+				else {
+					int dir = 0;        // 상어의 방향 체크
+					int ns_r = board[i][j].r, ns_c = board[i][j].c;  // 상어의 처음 위치로 세팅
+					int need_position_value;
+					int actual_s;
+
+					if (board[i][j].d == 1) {  // 위쪽방향이면
+						dir = 2;
+						need_position_value = (R - 1) * 2;
+					}
+					else if (board[i][j].d == 2) {  // 아래쪽 방향이면
+						dir = 0;
+						need_position_value = (R - 1) * 2;
+					}
+					else if (board[i][j].d == 3) {  // 오른쪽 방향이면
+						dir = 1;
+						need_position_value = (C - 1) * 2;
+					}
+					else if (board[i][j].d == 4) {  // 왼쪽 방향이면
+						dir = 3;
+						need_position_value = (C - 1) * 2;
+					}
+
+					//모듈려 연산을 이용해서 쓸데없는 움직임 계산 제거
+					actual_s = board[i][j].s % need_position_value;
+
+					for (int t = 0; t < actual_s; t++) {      // 상어가 움직이는 칸마다 R또는 C를 넘는 지 안넘는 지 체크
+						ns_r += dy[dir];
+						ns_c += dx[dir];
+
+						if (ns_r >= 1 && ns_r <= R && ns_c >= 1 && ns_c <= C) continue;     // 다음 이동 좌표가 수조의 최대 범위를 넘지 않았을 경우에는 유지
+						else {                                                              // 다음 이동 좌표가 수조의 최대 범위를 넘으면, 진행 방향(dir) 바꿔서 진행 하나 수행
+							//이동 전 위치로 원복
+							ns_r -= dy[dir];
+							ns_c -= dx[dir];
+
+							//dir 반대로 변경
+							dir = (dir + 2) % 4;
+
+							//변경된 dir로 이동       // 이 후에 R,C 범위 나갔는 지 안나갔는지 체크 안해줘도 됨. 
+							ns_r += dy[dir];
+							ns_c += dx[dir];
+						}
+					}
+					if (dir == 0) dir = 2;
+					else if (dir == 1) dir = 3;
+					else if (dir == 2) dir = 1;
+					else if (dir == 3) dir = 4;
+
+
+
+					// tmp_board[][]에 갱신
+					if (tmp_board[ns_r][ns_c].z == 0) {  // 누적용 보드에 아직 값이 없다면 바로 기입
+						tmp_board[ns_r][ns_c] = Shark(ns_r, ns_c, board[i][j].s, dir, board[i][j].z);
+					}
+					else {  // 누적용 보드에 이미 상어 하나가 자리잡고 있다면
+						if (tmp_board[ns_r][ns_c].z > board[i][j].z) {             // 자리 잡고 있던 상어가 더 크다면  유지
+							continue;
+						}
+						else if (tmp_board[ns_r][ns_c].z < board[i][j].z) {        // 새로 온 상어다 거 크다면  교체
+							tmp_board[ns_r][ns_c] = Shark(ns_r, ns_c, board[i][j].s, dir, board[i][j].z);
+						}
+					}
+				}
+			}
+		}
+
+		// tmp_board[][] 내용을 board[][]로 덮어쓰기
+		for (int i = 1; i <= R; i++) {
+			for (int j = 1; j <= C; j++) {
+				board[i][j] = tmp_board[i][j];
+				tmp_board[i][j] = Shark();
+			}
+		}
+	}
+
+	cout << amount_shark << '\n';
+
+	return 0;
+}
