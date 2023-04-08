@@ -1,0 +1,62 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int H, W;
+int input_num;
+int cur_num;
+int left_max;
+int right_max;
+int standard_height;
+int acc;
+
+int answer;
+
+vector<int> tmp_vec;
+
+
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	
+	cin >> H >> W;
+
+	for (int i = 0; i < W; i++) {
+		cin >> input_num;
+		tmp_vec.push_back(input_num);
+	}
+
+	for (int i = 1; i < W-1; i++) {
+		//왼쪽 최대값 찾기
+		for (int j = 0; j < i; j++) {
+			if (left_max < tmp_vec[j]) {
+				left_max = tmp_vec[j];
+			}
+		}
+		//오른쪽 최대값 찾기
+		for (int j = i+1; j < W; j++) {
+			if (right_max < tmp_vec[j]) {
+				right_max = tmp_vec[j];
+			}
+		}
+		
+		standard_height = min(left_max, right_max);
+		acc = standard_height - tmp_vec[i];
+
+		if (acc < 0) acc = 0;
+
+		answer += acc;
+		left_max = 0;
+		right_max = 0;
+	}
+
+	cout << answer;
+
+	return 0;
+}
