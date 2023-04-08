@@ -1,0 +1,136 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <map>
+#include <string>
+#include <vector>
+#include <deque>
+
+using namespace std;
+
+// 캐슬 디펜스 아이디어
+// 게임의 총 횟수는 최대 N번 (맨 위쪽 얘가 맨 아래 넘어서 와야 하므로..)
+// 궁수의 배치도는 M개 중 3개를 뽑는 조합의 수(BT로 선정)
+// 궁수 위치가 선발됐다면, 각 궁수 위치를 기준으로 Depth를 D로 하는 BFS를 수행(왼쪽을 우선적으로 탐색하는).
+// DFS탐색 하는 와중에 적이 찾아지면 바로 DFS캔슬하고, 킬수 올리고, 판 위에 적 제거하고 끝.
+// 궁수 3명 좌표에 대해 수행 한 후, 수정된 board[][]를 한 칸 내리고 다시 또 진행
+
+struct Archors_attack {
+	int r;
+	int c;
+	int attack_range;
+	Archors_attack(int R, int C, int A_R) : r(R), c(C), attack_range(A_R) {}
+};
+
+int N, M, D;
+int board[17][17];
+int tmp_board[17][17];
+int visited[17][17];
+int Picked_Archor[16];
+
+int dr[4] = { 0, -1, 0, 1 };
+int dc[4] = { -1, 0, 1, 0 };
+
+int Archors_num = 3;
+vector<int> Archor_position_list;          // 아처의 행값은 고정되어 있으므로, 여기에 들어가는 값은 아처의 Col 값
+vector<Archors_attack> Maybe_Killed;
+
+int acc;
+int answer;
+
+void BFS(int C) {    // 아처의 행값만 받아서 BFS 수행, 리턴값은 0 또는 1이다.(적을 잡으면 1, 못잡으면 0이 뜰 것
+	bool tmp_visited[17][17] = {false};
+	bool flag = false; // 적을 잡았네 못잡았네 하는 플래그
+	deque<Archors_attack> Q;
+	Q.push_back(Archors_attack(N + 1, C, 0));
+	tmp_visited[N + 1][C] = true;
+
+	while (!Q.empty()) {
+		Archors_attack cur = Q.front();
+		Q.pop_front();
+
+		for (int i = 0; i < 4; i++) {
+			int nr = cur.r + dr[i];
+			int nc = cur.c + dc[i];
+			int n_ar = cur.attack_range + 1;
+			if (n_ar > D) break;
+
+			if (nr <= N && nr >= 1 && nc <= M && nc >= 1 && tmp_visited[nr][nc] == false) {    // 움직일 다음 위치
+				tmp_visited[nr][nc] = true;				
+				Q.push_back(Archors_attack(nr, nc, n_ar));
+
+				if(n_ar <= D && board[nr][nc] == 1) {// board의 범위와 공격 사정거리 안에 적이 있으면 적 제거 예정 / 현재 (왼 위 오)이기 때문에, 저장한 값이 무조건 왼쪽우선 일 거라 가정.
+					Maybe_Killed.push_back(Archors_attack(nr, nc, n_ar));
+					return;
+				}
+			}
+		}
+	}
+
+}
+
+void bt(int Depth, int idx) {
+	if (Depth == Archors_num) {
+		// BFS를 여기서 돌려가지고 계산때리기
+
+		for (int t = 0; t < N; t++) {                    // 게임의 최대 횟수는 N번 만큼이다.
+			// 궁수가 적을 쏘는 작업
+			for (int a = 0; a < Archors_num; a++) {      // 궁수 수(3) 만큼 돌릴 것
+				BFS(Archor_position_list[a]);     // 최대 적 3명 제거에서 0명 제거일 수 있음.
+			}
+
+			// Maybe_Killed 에 저장한 애들로 돌아가면서 board[][] = 0 으로 해줌 그리고 계산
+			for (int i = 0; i < Maybe_Killed.size(); i++) {
+				if (board[Maybe_Killed[i].r][Maybe_Killed[i].c] == 1) acc++;
+				board[Maybe_Killed[i].r][Maybe_Killed[i].c] = 0;
+			}
+			Maybe_Killed.clear();
+
+			// 살아남은 적이 한 칸 씩 밀고 내려오는 작업
+			for (int i = N; i > 0; i--) {
+				for (int j = 1; j <= M; j++) {
+					board[i + 1][j] = board[i][j];       // 한 칸씩 내리기
+				}
+			}
+			for (int j = 1; j <= M; j++) {
+				board[1][j] = 0;                         // 1번 칸은 000~으로 패딩
+			}
+		}
+		
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= M; j++) {
+				board[i][j] = tmp_board[i][j];
+			}
+		}
+		answer = max(answer, acc);
+		acc = 0;
+		return;
+	}
+
+	for (int i = idx; i <= M; i++) {
+		Archor_position_list.push_back(i);
+		bt(Depth + 1, idx + 1);
+		Archor_position_list.pop_back();
+	}
+	return;
+}
+
+int main() {
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+	
+	cin >> N >> M >> D;
+
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= M; j++) {
+			cin >> board[i][j];
+			tmp_board[i][j] = board[i][j];
+		}
+	}
+
+	bt(0, 1);
+
+	cout << answer;
+
+	return 0;
+}
