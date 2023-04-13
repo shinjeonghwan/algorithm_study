@@ -1,0 +1,63 @@
+#include <iostream>
+#include <vector>
+#include <limits>
+
+using namespace std;
+
+// 운동 아이디어
+// Chat GPT 사용 뼈대코드 & 알고리즘(플로이드 워샬)
+// 코드보면서 디버깅 및 부분 수정
+
+
+const int INF = numeric_limits<int>::max(); // Represents infinity
+
+void floydWarshall(vector<vector<int>>& graph, int V) {
+    for (int k = 0; k < V; ++k) {   // 거쳐갈 노드
+        for (int i = 0; i < V; ++i) {    // 시작할 노드
+            for (int j = 0; j < V; ++j) {    // 도착할 노드
+                if (graph[i][k] != INF && graph[k][j] != INF && graph[i][k] + graph[k][j] < graph[i][j]) {
+                    graph[i][j] = graph[i][k] + graph[k][j];
+                }
+            }
+        }
+    }
+}
+
+
+int V, E;
+
+int main() {
+    cin >> V >> E;
+
+    vector<vector<int>> graph(V, vector<int>(V, INF)); // Initialize the graph with initial distances
+    for (int i = 0; i < E; ++i) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        graph[a - 1][b - 1] = c; // Update the graph with input road distances
+    }
+    for (int i = 0; i < V; ++i) {
+        graph[i][i] = 0;
+    }
+
+
+    floydWarshall(graph, V); // Run the Floyd Warshall algorithm
+
+    int minSum = INF; // Initialize the minimum sum of road lengths to a large value
+    for (int i = 0; i < V; ++i) {
+        for (int j = 0; j < V; ++j) {
+            if (i != j && graph[i][j] != INF && graph[j][i] != INF) { // Ignore cases where i and j are the same village or there is no direct road
+                int sum = graph[i][j] + graph[j][i]; // Calculate the sum of road lengths for a cycle
+                minSum = min(minSum, sum); // Update the minimum sum if the calculated sum is smaller
+            }
+        }
+    }
+
+    if (minSum == INF) {
+        cout << -1 << endl; // If no valid cycle is found, print -1
+    }
+    else {
+        cout << minSum << endl; // Otherwise, print the minimum sum of road lengths
+    }
+
+    return 0;
+}
