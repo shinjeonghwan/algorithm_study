@@ -1,0 +1,73 @@
+#include <iostream>
+#include <string>
+#include <stack>
+#include <vector>
+
+using namespace std;
+
+stack<int> S;
+stack<int> S_right;
+int N;
+int prev_num;
+
+vector<int> input_int;
+vector<int> ans;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
+    cin >> N;
+
+    for (int i = 0; i < N; i++) {
+        int tmp;
+        cin >> tmp;
+        input_int.push_back(tmp);
+    }
+
+    for (int i = 0; i < N; i++) {
+        S.push(input_int[i]);
+    }
+
+    for (int i = 0; i < N; i++) {
+        int NGE = S.top();
+        int NGE_ans = 0;
+        S.pop();
+
+        if (S_right.empty()) {
+            NGE_ans = -1;
+            S_right.push(NGE);
+        }
+
+        else {
+            while (NGE_ans == 0) {
+                if (NGE >= S_right.top()) {
+                    // 현재 애가 오른쪽 애보다 크면 오른쪽애 버려야 함.
+                    S_right.pop();
+                    if (S_right.empty()) {
+                        //그러다가 오른쪽 스택이 아무것도 안남으면 그냥 그대로 종료
+                        NGE_ans = -1;
+                        S_right.push(NGE);
+                    }
+                }
+                else {
+                    // NGE가 오른쪽애보다 작으면
+                    NGE_ans = S_right.top();
+                    S_right.push(NGE);
+                }
+            }
+        }
+        ans.push_back(NGE_ans);
+    }
+
+    for (int i = ans.size() - 1; i >= 0; i--) {
+        cout << ans[i] << ' ';
+    }
+
+
+
+
+
+    return 0;
+}
