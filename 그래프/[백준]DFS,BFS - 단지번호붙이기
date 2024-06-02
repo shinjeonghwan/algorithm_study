@@ -1,102 +1,79 @@
-DFS 
+#include <iostream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <algorithm>
+
+using namespace std;
+
+struct Node {
+    int x;
+    int y;
+    Node(int X, int Y) : x(X), y(Y) {}
+};
+
+int dx[4] = { 1, -1, 0 , 0 };
+int dy[4] = { 0, 0, 1 , -1 };
+
+int N;
+int BFS_res;
+int board[26][26];
+vector<int> result;
+bool visited[26][26];
+char tmp;
 
 
-import sys
-sys.setrecursionlimit(10000)
-def solution(N):
-    def dfs(x, y, num):
-        if x <= -1 or x >= N or y <= -1 or y >= N:
-            return False, num
-        if graph[x][y] == 1:
-            graph[x][y] = 0
-            num += 1
-            _, num = dfs(x - 1, y, num)
-            _, num = dfs(x, y - 1, num)
-            _, num = dfs(x + 1, y, num)
-            _, num = dfs(x, y + 1, num)
-            return True, num
-        return False, num
+int BFS(int i, int j) {
+    deque<Node> Q;
+    Q.push_back(Node(i, j));
+    int cnt = 1;
+    visited[i][j] = true;
+    while (!Q.empty()) {
+        Node cur = Q.front();
+        Q.pop_front();
+        for(int i =0 ; i < 4; i++){
+            int nx = cur.x + dx[i];
+            int ny = cur.y + dy[i];
+            if (nx >= 0 && nx < N && ny >= 0 && ny < N && visited[nx][ny] == false && board[nx][ny] == 1) {
+                Q.push_back(Node(nx, ny));
+                cnt++;
+                visited[nx][ny] = true;
+            }
+        }
+    }
+    return cnt;
+}
 
-    cnt = 0
-    graph = []
-    for i in range(N):
-        graph.append(list(map(int, input())))
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
 
-    apart_num = []
-    for i in range(N):
-        for j in range(N):
-            num = 0
-            a, b = dfs(i,j,num)
-            if a == True:
-                cnt += 1
-                apart_num.append(b)
-    print(cnt)
-    apart_num.sort()
-    for i in apart_num:
-        print(i)
+    cin >> N;
 
-if __name__ == '__main__':
-    N = int(input())
-    solution(N)
-    
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cin >> tmp;
+            board[i][j] = tmp - '0';
+        }
+    }
 
 
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (visited[i][j] == false && board[i][j] == 1) {
+                BFS_res = BFS(i, j);
+                result.push_back(BFS_res);
+            }
+        }
+    }
+    cout << result.size() << '\n';
 
----------------------------------------------------------
+    sort(result.begin(), result.end());
 
-BFS 풀이
+    for (int i = 0; i < result.size(); i++) {
+        cout << result[i] << '\n';
+    }
 
-import sys
-from collections import deque
-sys.setrecursionlimit(10000)
-def solution(N):
-    dx = [-1, 1, 0, 0]
-    dy = [0, 0, -1, 1]
-
-    def bfs(x, y, num):
-        Q = deque()
-        Q.append((x, y))
-        apt_num_cnt = 1
-        while Q:
-            x, y = Q.popleft()
-            for i in range(4):
-                nx = x + dx[i]
-                ny = y + dy[i]
-                if nx <= -1 or nx >= N or ny <= -1 or ny >= N:
-                    continue
-                if graph[nx][ny] == 0:
-                    continue
-                if graph[nx][ny] == 1:
-                    graph[x][y] = 2
-                    graph[nx][ny] = 2
-                    apt_num_cnt = apt_num_cnt + 1
-                    Q.append((nx, ny))
-        return apt_num_cnt
-
-    cnt = 0
-    graph = []
-    for i in range(N):
-        graph.append(list(map(int, input())))
-
-    apart_num = []
-    for i in range(N):
-        for j in range(N):
-            num = 0
-            if graph[i][j] == 0 or graph[i][j] >= 2:
-                continue
-            if graph[i][j] == 1:
-                b = bfs(i,j,num)
-                cnt += 1
-                apart_num.append(b)
-    print(cnt)
-    apart_num.sort()
-    for i in apart_num:
-        print(i)
-
-if __name__ == '__main__':
-    N = int(input())
-    solution(N)
-
-
-
-    
+    return 0;
+}
