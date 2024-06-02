@@ -1,0 +1,85 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <algorithm>
+
+using namespace std;
+
+
+int N, M, V;
+
+vector<int> vec[1001];
+vector<int> result;
+bool visit_D[1001];
+bool visit_B[1001];
+int tmp_u;
+int tmp_v;
+
+void DFS(int start_v) {
+    result.push_back(start_v);
+    visit_D[start_v] = true;
+
+    for (int v = 0; v < vec[start_v].size(); v++) {
+        if (visit_D[vec[start_v][v]] == false) {
+            DFS(vec[start_v][v]);
+        }
+    }
+}
+
+void BFS(int start_v) {
+    visit_B[start_v] = true;
+    deque<int> Q;
+    Q.push_front(start_v);
+
+    while (!Q.empty()) {
+        int cur = Q.front();
+        result.push_back(cur);
+        Q.pop_front();
+
+        for (int i = 0; i < vec[cur].size(); i++) {
+            if (visit_B[vec[cur][i]] == false) {
+                visit_B[vec[cur][i]] = true;
+                Q.push_back(vec[cur][i]);
+            }
+        }
+
+
+    }
+
+
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
+    cin >> N >> M >> V;
+
+    for (int i = 0; i < M; i++) {
+        cin >> tmp_u >> tmp_v;
+        vec[tmp_u].push_back(tmp_v);
+        vec[tmp_v].push_back(tmp_u);
+    }
+
+    for (int i = 0; i < N+1; i++) {
+        sort(vec[i].begin(), vec[i].end());
+    }
+    
+    DFS(V);
+
+    for (int i = 0; i < result.size(); i++) {
+        cout << result[i] << ' ';
+    }
+    cout << '\n';
+    result.clear();
+
+
+    BFS(V);
+    for (int i = 0; i < result.size(); i++) {
+        cout << result[i] << ' ';
+    }
+
+    return 0;
+}
