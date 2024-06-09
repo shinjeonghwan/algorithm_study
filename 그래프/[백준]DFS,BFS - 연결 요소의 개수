@@ -1,29 +1,56 @@
-import sys
-sys.setrecursionlimit(10000)
-def solution(N, M):
-    def dfs(graph, v, visited):
-        visited[v] = True
-        for i in graph[v]:
-            if not visited[i]:
-                dfs(graph, i, visited)
+#include <iostream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <algorithm>
 
-    cnt = 0
-    graph = [[] for _ in range(N+1)]
-    graph[0] = [0]
-    for _ in range(M):
-        u, v = map(int, sys.stdin.readline().split())
-        graph[u].append(v)
-        graph[v].append(u)
+using namespace std;
 
-    visited = [False]*(N+1)
+struct e_t {
+	int x;
+	int y;
+	e_t(int X, int Y) : x(X), y(Y) {}
+};
 
-    for idx in range(1, N+1):
-        if visited[idx] == False:
-            dfs(graph, idx, visited)
-            cnt += 1
+int dx[8] = { 1, -1, 0 , 0, 1, -1, -1, 1 };
+int dy[8] = { 0, 0, 1 , -1, 1, -1, 1, -1 };
 
-    print(cnt)
+int N, M;
+vector<int> board[1001];
+vector<int> result;
+bool visited[1001];
+int tmp_u, tmp_v;
+int cnt = 0;
 
-if __name__ == '__main__':
-    N,M = map(int, sys.stdin.readline().split())
-    solution(N, M)
+void DFS(int start_v) {
+	visited[start_v] = true;
+	for (int i = 0; i < board[start_v].size(); i++) {
+		if (visited[board[start_v][i]] == false) {
+			DFS(board[start_v][i]);
+		}
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> N >> M;
+
+	for (int i = 0; i < M; i++) {
+		cin >> tmp_u >> tmp_v;
+		board[tmp_u].push_back(tmp_v);
+		board[tmp_v].push_back(tmp_u);
+	}
+
+	for (int i = 1; i <= N; i++) {
+		if (visited[i] == false) {
+			DFS(i);
+			cnt++;
+		}
+	}
+	cout << cnt;
+
+	return 0;
+}
