@@ -1,0 +1,82 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <algorithm>
+
+using namespace std;
+
+struct Node {
+    int x;
+    int y;
+    Node(int X, int Y) : x(X), y(Y) {}
+};
+
+int dx[8] = { 1, -1, 0 , 0, 1, -1, -1, 1 };
+int dy[8] = { 0, 0, 1 , -1, 1, -1, 1, -1 };
+
+int w,h;
+int BFS_res;
+int board[51][51];
+vector<int> result;
+bool visited[51][51];
+int tmp;
+
+
+void BFS(int i, int j) {
+    deque<Node> Q;
+    Q.push_back(Node(i, j));
+    visited[i][j] = true;
+    while (!Q.empty()) {
+        Node cur = Q.front();
+        Q.pop_front();
+        for(int i =0 ; i < 8; i++){
+            int nx = cur.x + dx[i];
+            int ny = cur.y + dy[i];
+            if (nx >= 0 && nx < h && ny >= 0 && ny < w && visited[nx][ny] == false && board[nx][ny] == 1) {
+                Q.push_back(Node(nx, ny));
+                visited[nx][ny] = true;
+            }
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
+    while (true) {
+        cin >> w >> h;
+        
+        if (w == 0 && h == 0) {
+            break;
+        }
+
+        BFS_res = 0;
+        for (int i = 0; i < 51; i++) {
+            for (int j = 0; j < 51; j++) {
+                visited[i][j] = false;
+                board[i][j] = 0;
+            }
+        }
+        
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                cin >> tmp;
+                board[i][j] = tmp;
+            }
+        }
+
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                if (visited[i][j] == false && board[i][j] == 1) {
+                    BFS(i, j);
+                    BFS_res++;
+                }
+            }
+        }
+        cout << BFS_res << '\n';
+    }    
+    return 0;
+}
