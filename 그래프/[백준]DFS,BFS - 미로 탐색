@@ -1,0 +1,65 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <deque>
+#include <algorithm>
+
+using namespace std;
+
+struct e_t {
+	int x;
+	int y;
+	e_t(int X, int Y) : x(X), y(Y){}
+};
+
+int dx[4] = { 1, -1, 0 , 0};
+int dy[4] = { 0, 0, 1 , -1};
+
+int N, M;
+int board[101][101];
+int step_board[101][101];
+char tmp;
+int ans;
+
+void BFS(int row, int col) {
+	deque<e_t> Q;
+	Q.push_back(e_t(row, col));
+	int cur_step = 1;
+	step_board[row][col] = cur_step;
+
+	while (!Q.empty()) {
+		e_t cur = Q.front();
+		Q.pop_front();
+
+		for (int i = 0; i < 4; i++) {
+			int nx = cur.x + dx[i];
+			int ny = cur.y + dy[i];
+
+			if (nx >= 1 && nx <= N && ny >= 1 && ny <= M && board[nx][ny] == 1 && step_board[nx][ny] > step_board[cur.x][cur.y] + 1) {
+				Q.push_back(e_t(nx, ny));
+				step_board[nx][ny] = step_board[cur.x][cur.y] + 1;
+			}
+		}
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> N >> M;
+
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= M; j++) {
+			cin >> tmp;
+			board[i][j] = tmp - '0';
+			step_board[i][j] = 9999999;
+		}
+	}
+
+	BFS(1, 1);
+	cout << step_board[N][M];
+
+	return 0;
+}
