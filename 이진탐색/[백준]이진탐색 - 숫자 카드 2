@@ -1,0 +1,41 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <numeric>
+#include <algorithm>
+
+using namespace std;
+
+int N, M;
+vector<int> numbers;
+vector<int> checkers;
+int tmp;
+int ans;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> N;
+
+	for (int i = 0; i < N; i++) {
+		cin >> tmp;
+		numbers.push_back(tmp);
+	}
+
+	sort(numbers.begin(), numbers.end());
+
+	cin >> M;
+
+	for (int i = 0; i < M; i++) {
+		cin >> tmp;
+
+		ans = upper_bound(numbers.begin(), numbers.end(), tmp) - lower_bound(numbers.begin(), numbers.end(), tmp);
+
+		cout << ans << " ";
+
+	}
+
+	return 0;
+}
