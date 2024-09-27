@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+#include <deque>
+#include <algorithm>
+
+using namespace std;
+
+struct e_t {
+	long long Mass;
+	long long Value;
+	e_t(long long M, long long V) : Mass(M), Value(V) {}
+};
+
+bool cmp(e_t &a , e_t &b) {
+	if (a.Value >= b.Value) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+vector<e_t> value;
+long long W, N;
+long long tmp1, tmp2;
+long long ans = 0;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> W >> N;
+
+	for (long long i = 0; i < N; i++) {
+		cin >> tmp1 >> tmp2; 
+		value.emplace_back(e_t(tmp1, tmp2));
+	}
+
+	//sort(value.begin(), value.end(), cmp);
+	sort(value.begin(), value.end(), [](const e_t& a, const e_t& b) {
+		return a.Value > b.Value; // Sort in descending order of Value
+	});
+
+	for (long long i = 0; i < N; i++) {
+		
+		if (W >= value[i].Mass) {
+			W = W - value[i].Mass;
+			ans = ans + value[i].Mass * value[i].Value;
+		}
+		else {
+			ans = ans + W * value[i].Value;
+			break;
+		}
+
+	}
+
+	cout << ans;
+
+	return 0;
+}
