@@ -1,112 +1,120 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <queue>
-#include <vector>
+#include <deque>
+#include <algorithm>
 
 using namespace std;
 
 struct e_t {
 	int row;
 	int col;
-	e_t (int R, int C) : row(R), col(C) {}
+	int value;
+	e_t(int Row, int Col, int Value) : row(Row), col(Col), value(Value) {};
 };
 
+deque<e_t> united_list;
 
-int board[51][51];
-bool visited[51][51];
+int dr[4] = { 0, -1, 1, 0 };
+int dc[4] = { -1, 0, 0, 1 };
 
-vector< vector<e_t> > union_vector;
-vector< e_t > tmp_vector;
-queue< e_t > Q;
-
-int dx[4] = { 1, 0 ,-1, 0 };
-int dy[4] = { 0, 1, 0, -1 };
+int Board[101][101];
+bool visited[101][101];
 
 int N, L, R;
 int answer;
-bool game_over = false;
+bool Flag = false;
+
+
+void BFS(int r, int c) {
+
+	visited[r][c] = true;
+	deque<e_t> Q;
+	united_list.push_back(e_t(r, c, Board[r][c]));
+	Q.push_back(e_t(r, c, Board[r][c]));
+
+	while (!Q.empty()) {
+		int cur_r = Q.front().row;
+		int cur_c = Q.front().col;
+		int cur_val = Q.front().value;
+		Q.pop_front();
+
+		for (int i = 0; i < 4; i++) {
+			int nr = cur_r + dr[i];
+			int nc = cur_c + dc[i];
+
+			if (nr > 0 && nr <= N && nc > 0 && nc <= N && visited[nr][nc] == false && abs(cur_val - Board[nr][nc]) >= L && abs(cur_val - Board[nr][nc]) <= R) {
+				visited[nr][nc] = true;
+				Q.push_back(e_t(nr, nc, Board[nr][nc]));
+				united_list.push_back(e_t(nr, nc, Board[nr][nc]));
+				Flag = true;
+			}
+		}
+	}
+}
 
 int main() {
-	ios::sync_with_stdio(0);
+	ios::sync_with_stdio(false);
 	cin.tie(0);
 	cout.tie(0);
 
 	cin >> N >> L >> R;
 
-	for (int i = 1; i <= N; i++) {
-		for (int j = 1; j <= N; j++) {
-			cin >> board[i][j];
+	for (int i = 0; i < 101; i++) {
+		for (int j = 0; j < 101; j++) {
+			Board[i][j] = -1;
 		}
 	}
 
-	while (!game_over) {
-		game_over = true;   // 얘를 끄기 위해서는 union_vector의 tmp_vector가 최소 2개이상(연합)을 이루어야 한다.
 
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			int tmp;
+			cin >> tmp;
+			Board[i][j] = tmp;
+		}
+	}
+
+
+	while (!Flag) {
 		for (int i = 1; i <= N; i++) {
 			for (int j = 1; j <= N; j++) {
-				if(visited[i][j] == false){
-					tmp_vector.clear();
-					visited[i][j] = true;
-					Q.push(e_t(i, j));
-					tmp_vector.push_back(e_t(i, j));
+				//BFS 시작.
+				if (visited[i][j] == false) {
+					BFS(i, j);
 
-					while (!Q.empty()) {
-						e_t cur = Q.front();
-						Q.pop();
-
-						for (int k = 0; k < 4; k++) {
-							int nx = cur.row + dx[k];
-							int ny = cur.col + dy[k];
-
-							if (nx >= 1 && nx <= N && ny >= 1 && ny <= N && visited[nx][ny] == false && abs(board[cur.row][cur.col] - board[nx][ny]) >= L && abs(board[cur.row][cur.col] - board[nx][ny]) <= R) {
-								visited[nx][ny] = true;
-								Q.push(e_t(nx, ny));
-								tmp_vector.push_back(e_t(nx, ny));
-							}
-						}
+					int sum_of_list = 0;
+					for (auto country : united_list) {
+						sum_of_list += country.value;
 					}
-					union_vector.push_back(tmp_vector);
+					sum_of_list = sum_of_list / united_list.size();
+
+					for (auto country : united_list) {
+						Board[country.row][country.col] = sum_of_list;
+					}
+
+					// BFS 한 번은 수행했으면
+					united_list.clear();
 				}
 			}
 		}
 
-		for (int u = 0; u < union_vector.size(); u++) {
-			if (union_vector[u].size() != 1) {
-				game_over = false;
-				break;
-			}
-		}
-
-		if (!game_over) {    // 연합을 이루고 있으면,  board 업데이트 및 visited false로 초기화.
+		if (Flag) {
 			answer++;
-
-			// 연합 계산 및 board 업데이트
-			for (int u = 0; u < union_vector.size(); u++) {
-				int tmp_sum = 0;
-				for (int t = 0; t < union_vector[u].size(); t++) {
-					tmp_sum += board[union_vector[u][t].row][union_vector[u][t].col];
-				}
-
-				tmp_sum = tmp_sum / union_vector[u].size();
-
-				for (int t = 0; t < union_vector[u].size(); t++) {
-					board[union_vector[u][t].row][union_vector[u][t].col] = tmp_sum;
-				}
-			}
-
-			union_vector.clear();
-
-
-			// visited 초기화
-			for (int i = 1; i <= N; i++) {
-				for (int j = 1; j <= N; j++) {
+			// 다음 번도 수행해야 하므로.
+			Flag = false;
+			for (int i = 0; i <= 100; i++) {
+				for (int j = 0; j <= 100; j++) {
 					visited[i][j] = false;
 				}
 			}
 		}
+		else {
+			// 반복문 종료
+			break;
+		}
 	}
 
-	cout << answer;
 
+
+	cout << answer;
 	return 0;
 }
