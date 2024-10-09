@@ -1,136 +1,179 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <map>
-#include <string>
-#include <vector>
 #include <deque>
+#include <algorithm>
+#include <vector>
+#include <cmath>
 
 using namespace std;
 
-// 캐슬 디펜스 아이디어
-// 게임의 총 횟수는 최대 N번 (맨 위쪽 얘가 맨 아래 넘어서 와야 하므로..)
-// 궁수의 배치도는 M개 중 3개를 뽑는 조합의 수(BT로 선정)
-// 궁수 위치가 선발됐다면, 각 궁수 위치를 기준으로 Depth를 D로 하는 BFS를 수행(왼쪽을 우선적으로 탐색하는).
-// DFS탐색 하는 와중에 적이 찾아지면 바로 DFS캔슬하고, 킬수 올리고, 판 위에 적 제거하고 끝.
-// 궁수 3명 좌표에 대해 수행 한 후, 수정된 board[][]를 한 칸 내리고 다시 또 진행
-
-struct Archors_attack {
-	int r;
-	int c;
-	int attack_range;
-	Archors_attack(int R, int C, int A_R) : r(R), c(C), attack_range(A_R) {}
+struct e_t {
+	int row;
+	int col;
+	int arrow_distance;
+	e_t(int Row, int Col, int Arrow_Dist) : row(Row), col(Col), arrow_distance(Arrow_Dist) {};
 };
 
+struct archer_pos {
+	int archer_1;
+	int archer_2;
+	int archer_3;
+	archer_pos(int A1, int A2, int A3) : archer_1(A1), archer_2(A2), archer_3(A3) {};
+};
+
+// 궁수 방향으로 이동할 필요는 굳이 없으니까?
+int dr[3] = { 0, -1, 0 };
+int dc[3] = { -1, 0, 1 };
+
+
+//최대 범위 15에다가 궁수가 존재하는 성벽까지 추가로 계산해야 하므로 17
+int Board[17][17];
+int tmp_Board[17][17];
+bool visited[17][17];
+
+vector<archer_pos> arhcers_position;
+
+
 int N, M, D;
-int board[17][17];
-int tmp_board[17][17];
-int visited[17][17];
-int Picked_Archor[16];
+int answer = 0;
 
-int dr[4] = { 0, -1, 0, 1 };
-int dc[4] = { -1, 0, 1, 0 };
-
-int Archors_num = 3;
-vector<int> Archor_position_list;          // 아처의 행값은 고정되어 있으므로, 여기에 들어가는 값은 아처의 Col 값
-vector<Archors_attack> Maybe_Killed;
-
-int acc;
-int answer;
-
-void BFS(int C) {    // 아처의 행값만 받아서 BFS 수행, 리턴값은 0 또는 1이다.(적을 잡으면 1, 못잡으면 0이 뜰 것
-	bool tmp_visited[17][17] = {false};
-	bool flag = false; // 적을 잡았네 못잡았네 하는 플래그
-	deque<Archors_attack> Q;
-	Q.push_back(Archors_attack(N + 1, C, 0));
-	tmp_visited[N + 1][C] = true;
-
-	while (!Q.empty()) {
-		Archors_attack cur = Q.front();
-		Q.pop_front();
-
-		for (int i = 0; i < 4; i++) {
-			int nr = cur.r + dr[i];
-			int nc = cur.c + dc[i];
-			int n_ar = cur.attack_range + 1;
-			if (n_ar > D) break;
-
-			if (nr <= N && nr >= 1 && nc <= M && nc >= 1 && tmp_visited[nr][nc] == false) {    // 움직일 다음 위치
-				tmp_visited[nr][nc] = true;				
-				Q.push_back(Archors_attack(nr, nc, n_ar));
-
-				if(n_ar <= D && board[nr][nc] == 1) {// board의 범위와 공격 사정거리 안에 적이 있으면 적 제거 예정 / 현재 (왼 위 오)이기 때문에, 저장한 값이 무조건 왼쪽우선 일 거라 가정.
-					Maybe_Killed.push_back(Archors_attack(nr, nc, n_ar));
-					return;
-				}
-			}
-		}
-	}
-
-}
-
-void bt(int Depth, int idx) {
-	if (Depth == Archors_num) {
-		// BFS를 여기서 돌려가지고 계산때리기
-
-		for (int t = 0; t < N; t++) {                    // 게임의 최대 횟수는 N번 만큼이다.
-			// 궁수가 적을 쏘는 작업
-			for (int a = 0; a < Archors_num; a++) {      // 궁수 수(3) 만큼 돌릴 것
-				BFS(Archor_position_list[a]);     // 최대 적 3명 제거에서 0명 제거일 수 있음.
-			}
-
-			// Maybe_Killed 에 저장한 애들로 돌아가면서 board[][] = 0 으로 해줌 그리고 계산
-			for (int i = 0; i < Maybe_Killed.size(); i++) {
-				if (board[Maybe_Killed[i].r][Maybe_Killed[i].c] == 1) acc++;
-				board[Maybe_Killed[i].r][Maybe_Killed[i].c] = 0;
-			}
-			Maybe_Killed.clear();
-
-			// 살아남은 적이 한 칸 씩 밀고 내려오는 작업
-			for (int i = N; i > 0; i--) {
-				for (int j = 1; j <= M; j++) {
-					board[i + 1][j] = board[i][j];       // 한 칸씩 내리기
-				}
-			}
-			for (int j = 1; j <= M; j++) {
-				board[1][j] = 0;                         // 1번 칸은 000~으로 패딩
-			}
-		}
-		
-		for (int i = 1; i <= N; i++) {
-			for (int j = 1; j <= M; j++) {
-				board[i][j] = tmp_board[i][j];
-			}
-		}
-		answer = max(answer, acc);
-		acc = 0;
+void generateCombinations(int start, int depth, std::vector<int>& combination) {
+	if (depth == 3) {
+		arhcers_position.push_back(archer_pos(combination[0], combination[1], combination[2]));
 		return;
 	}
 
-	for (int i = idx; i <= M; i++) {
-		Archor_position_list.push_back(i);
-		bt(Depth + 1, idx + 1);
-		Archor_position_list.pop_back();
+	for (int i = start; i <= M; ++i) {
+		combination.push_back(i);
+		generateCombinations(i+1, depth + 1, combination);
+		combination.pop_back();
 	}
-	return;
+}
+
+e_t BFS(int ac_col) {
+	// 최대 D까지 수행하는데 D 자체가 한계점인듯.
+
+	visited[N + 1][ac_col] = true;
+	deque<e_t> Q;
+	Q.push_back(e_t(N + 1, ac_col, D));
+
+	while (!Q.empty()) {
+		auto cur = Q.front();
+		Q.pop_front();
+
+		for (int i = 0; i < 3; i++) {
+			int nr = cur.row + dr[i];
+			int nc = cur.col + dc[i];
+
+			if (nr >= 1 && nc >= 1 && nc <= M && visited[nr][nc] == false && cur.arrow_distance > 0) {
+				if (tmp_Board[nr][nc] == 1) {
+					// 찾았음 끝
+					return e_t(nr, nc, cur.arrow_distance);
+				}
+				else {
+					// 못찾았음, D가 0될 때까지 더 탐색
+					visited[nr][nc] = true;
+					Q.push_back(e_t(nr, nc, cur.arrow_distance - 1));
+				}
+			}
+		}
+	}
+	return e_t(0, 0, 0);
 }
 
 int main() {
-	ios::sync_with_stdio(0);
+	ios::sync_with_stdio(false);
 	cin.tie(0);
 	cout.tie(0);
-	
+
 	cin >> N >> M >> D;
 
 	for (int i = 1; i <= N; i++) {
 		for (int j = 1; j <= M; j++) {
-			cin >> board[i][j];
-			tmp_board[i][j] = board[i][j];
+			int tmp;
+			cin >> tmp;
+			Board[i][j] = tmp;
 		}
 	}
 
-	bt(0, 1);
+	vector<int> combination;
+	generateCombinations(1, 0, combination);
 
+	for (auto this_time : arhcers_position) {
+		//이번 시행에 사용할 Board[][] 세팅
+		for (int i = 0; i < 17; i++) {
+			for (int j = 0; j < 17; j++) {
+				tmp_Board[i][j] = Board[i][j];
+			}
+		}
+		int this_answer = 0;
+
+		while (true) {
+			bool end_flag = true;
+
+			for (int i = 0; i < 17; i++) {
+				for (int j = 0; j < 17; j++) {
+					visited[i][j] = false;
+				}
+			}
+			auto enemy_pos_1 = BFS(this_time.archer_1);
+
+			for (int i = 0; i < 17; i++) {
+				for (int j = 0; j < 17; j++) {
+					visited[i][j] = false;
+				}
+			}
+			auto enemy_pos_2 = BFS(this_time.archer_2);
+
+			for (int i = 0; i < 17; i++) {
+				for (int j = 0; j < 17; j++) {
+					visited[i][j] = false;
+				}
+			}
+			auto enemy_pos_3 = BFS(this_time.archer_3);
+
+			if (tmp_Board[enemy_pos_1.row][enemy_pos_1.col] == 1) {
+				tmp_Board[enemy_pos_1.row][enemy_pos_1.col] = 0;
+				this_answer++;
+			}
+			if (tmp_Board[enemy_pos_2.row][enemy_pos_2.col] == 1) {
+				tmp_Board[enemy_pos_2.row][enemy_pos_2.col] = 0;
+				this_answer++;
+			}
+			if (tmp_Board[enemy_pos_3.row][enemy_pos_3.col] == 1) {
+				tmp_Board[enemy_pos_3.row][enemy_pos_3.col] = 0;
+				this_answer++;
+			}
+
+			// 적군 +1 진군
+			//for~~~~~
+			for (int i = N; i >= 0; i--) {
+				for (int j = 1; j <= M; j++) {
+					tmp_Board[i + 1][j] = tmp_Board[i][j];
+				}
+			}
+
+			for (int j = 0; j <= 16; j++) {
+				tmp_Board[N + 1][j] = 0;
+			}
+
+			for (int i = 1; i <= N; i++) {
+				for (int j = 1; j <= M; j++) {
+					// 생존한 적군이 있다는 것
+					if (tmp_Board[i][j] == 1) {
+						end_flag = false;
+						break;
+					}
+				}
+			}
+			// 생존한 적군이 하나도 없으면 while문 종료
+			if (end_flag) {
+				break;
+			}
+		}
+
+		//answer 값 갱신 해줘야 함.
+		answer = max(answer, this_answer);
+	}
 	cout << answer;
-
 	return 0;
 }
