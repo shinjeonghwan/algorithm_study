@@ -1,0 +1,120 @@
+#include <iostream>
+#include <deque>
+#include <algorithm>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+
+struct TreeInfo {
+	int age;
+	TreeInfo(int A) : age(A) {};
+};
+
+int Board[11][11];                    // 양분의 값이 설정된 Board[][]
+int S2D2[11][11];
+
+int alive, dead_value;
+int N, M, K;
+int answer;
+deque<TreeInfo> Tree_Map[11][11];      // 해당 좌표의 트리 정보가 있는 Map
+
+int dr[8] = { 1, 1, 1, 0, -1, -1, -1, 0 };
+int dc[8] = { 0, -1, 1, 1, -1, 0, 1, -1 };
+
+bool cmp(const TreeInfo& A, const TreeInfo& B) {
+	return A.age < B.age;
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> N >> M >> K; 
+
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			int tmp;
+			cin >> tmp;
+			Board[i][j] = 5;
+			S2D2[i][j] = tmp;
+		}
+	}
+
+	int r, c, a;
+	for (int i = 1; i <= M; i++) {
+		cin >> r >> c >> a;
+        Tree_Map[r][c].push_back(TreeInfo(a));
+	}
+	
+	for(int z = 0; z < K; z++){
+		// 봄
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= N; j++) {
+				alive = 0;
+				dead_value = 0;
+				sort(Tree_Map[i][j].begin(), Tree_Map[i][j].end(), cmp);
+
+				for (int k = 0; k < Tree_Map[i][j].size(); k++) {
+					TreeInfo& tree = Tree_Map[i][j][k];
+					// 나무가 양분을 먹을 수 있으면
+					if (Board[i][j] >= tree.age) {
+						Board[i][j] -= tree.age; // 양분 소모
+						tree.age++; // 나무 나이 증가
+						alive++; // 살아있는 나무 수 증가
+					}
+					else {
+						// 죽은 나무 처리
+						dead_value += tree.age / 2; // 나무가 죽으면 양분으로
+					}
+				}
+				// 죽은 나무 삭제
+				Tree_Map[i][j].erase(Tree_Map[i][j].begin() + alive, Tree_Map[i][j].end());
+				// 여름: 죽은 나무로부터 양분 추가
+				Board[i][j] += dead_value;
+			}
+		}
+
+		// 가을
+		// 봄에 age가 5의 배수가 된 나무들이 종자 퍼트림
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= N; j++) {
+				for (TreeInfo& tree : Tree_Map[i][j]) {
+					if (tree.age % 5 == 0) { // 나이가 5의 배수인 나무가 번식
+						for (int d = 0; d < 8; d++) {
+							int nr = i + dr[d];
+							int nc = j + dc[d];
+							// 유효한 범위
+							if (nr >= 1 && nr <= N && nc >= 1 && nc <= N) {
+								Tree_Map[nr][nc].push_front(TreeInfo(1)); // 새로 나무 추가
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// 겨울
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= N; j++) {
+				Board[i][j] += S2D2[i][j];
+			}
+		}
+
+		//올 한 해 끝
+	}
+
+
+	// 살아있는 나무 수 체크
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			answer += Tree_Map[i][j].size();				
+		}
+	}
+
+	cout << answer;
+
+	return 0;
+}
