@@ -1,0 +1,70 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<string>
+
+using namespace std;
+
+struct INPUT_DATA{
+    int left = 0;
+    int right = 0;
+    INPUT_DATA(int L, int R) : left(L), right(R) {};
+};
+
+bool cmp(const INPUT_DATA& A, const INPUT_DATA & B){
+    if(A.left == B.left){
+        return A.right < B.right;
+    }
+    return A.left < B.left;
+}
+
+vector<INPUT_DATA> num_list;
+
+int N;
+string tmp_num;
+string tmp_cut;
+
+int main(int argc, char** argv)
+{
+    ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+    cin >> N;
+    
+    for (int i = 0; i < N; i++) {
+		cin >> tmp_num;
+        int left_num = -1;
+        int right_num = -1;
+        bool cut_flag = false;
+        for(int j = 0; j < tmp_num.size(); j++){
+            // . 이전이랑 이후로 나눠야 하므로
+            if(tmp_num[j] == '.') {
+                tmp_cut = tmp_num.substr(0,j);
+                left_num = stoi(tmp_cut);
+             
+                tmp_cut = tmp_num.substr(j+1, tmp_num.size() - (j+1));
+                right_num = stoi(tmp_cut);
+            }
+        }
+        // 소수점이 없는 숫자일 경우
+        if(left_num == -1){
+            left_num = stoi(tmp_num);
+            right_num = -1;
+        }
+        num_list.push_back(INPUT_DATA(left_num, right_num));
+	}
+
+    sort(num_list.begin(), num_list.end(), cmp);
+
+    for(int i =0; i < N; i++){
+        if(num_list[i].right == -1){
+            cout << num_list[i].left << '\n';
+        }
+        else{
+            cout << num_list[i].left << "." << num_list[i].right << '\n';
+        }
+    }
+
+    return 0;
+}
