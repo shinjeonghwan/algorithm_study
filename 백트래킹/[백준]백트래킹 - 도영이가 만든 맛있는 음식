@@ -1,0 +1,44 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+struct taste {
+	int sour;
+	int bitter;
+	taste(int Sour, int Bitter) : sour(Sour), bitter(Bitter) {}
+};
+
+int N;
+int S, B;
+vector<taste> ingredients;
+int ans = 2000000000;
+
+void bt(int Idx, int cur_sumS, int cur_sumB) {
+	if (Idx != 0) {
+		ans = min(ans, abs(cur_sumS - cur_sumB));
+	}
+
+	for (int i = Idx; i < N; i++) {
+		bt(i+1, cur_sumS * ingredients[i].sour, cur_sumB + ingredients[i].bitter);
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> N;
+
+	for (int i = 0; i < N; i++) {
+		cin >> S >> B;
+		ingredients.push_back(taste(S,B));
+	}
+	bt(0, 1, 0);
+	cout << ans;
+
+	return 0;
+}
