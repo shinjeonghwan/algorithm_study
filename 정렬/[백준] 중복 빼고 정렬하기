@@ -1,0 +1,38 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int N, M;
+vector<int> A;
+
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	cin >> N;
+	for (int i = 0; i < N; i++) {
+		int tmp;
+		cin >> tmp;
+		A.push_back(tmp);
+	}
+
+	//unique 사용하기 위한 1차 sort
+	sort(A.begin(), A.end());
+	auto it = std::unique(A.begin(), A.end());
+	A.erase(it, A.end());
+
+
+	sort(A.begin(), A.end());
+
+	for (int i = 0; i < A.size(); i++) {
+		cout << A[i] << ' ';
+	}
+
+	return 0;
+}
